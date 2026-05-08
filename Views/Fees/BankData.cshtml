@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Bank Data";
+    var months = ViewBag.Months as List<string> ?? new List<string>();
+}
+
+<div class="container mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bank-data-header py-3">
+            <h5 class="mb-0 text-white fw-bold">UBL Bank Data</h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="BankData" method="get">
+                <div class="row align-items-end g-3">
+                    <div class="col-md-5">
+                        <label class="form-label text-muted small fw-bold">Select Month:</label>
+                        <select name="month" class="form-select border-secondary-subtle py-2">
+                            <option value="">-- Select Month --</option>
+                            @foreach (var month in months)
+                            {
+                                <option value="@month">@month</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-search-blue w-100 py-2">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bank-data-header {
+        background-color: #0d1b3e; /* Dark blue from the image */
+        border-radius: 4px 4px 0 0 !important;
+    }
+    .btn-search-blue {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        border-radius: 4px;
+    }
+    .btn-search-blue:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+    .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    }
+</style>

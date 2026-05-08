@@ -1,0 +1,56 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
+<div class="card border-0 shadow-sm overflow-hidden h-100">
+    <div class="card-header bg-dark-blue py-3">
+        <h5 class="mb-0 text-white"><i class="fas fa-chart-bar me-2"></i>Reports</h5>
+    </div>
+    <div class="list-group list-group-flush">
+        <a asp-action="Challans" 
+           class="list-group-item list-group-item-action py-3 d-flex align-items-center report-link @(currentAction == "Challans" || currentAction == "Generate" ? "active" : "")">
+            <i class="fas fa-list text-success me-3 fs-5"></i>
+            <span class="fw-bold">All Challans</span>
+        </a>
+        <a asp-action="FeeReport" 
+           class="list-group-item list-group-item-action py-3 d-flex align-items-center report-link @(currentAction == "FeeReport" ? "active" : "")">
+            <i class="fas fa-file-invoice-dollar text-success me-3 fs-5"></i>
+            <span class="fw-bold">Fee Report</span>
+        </a>
+        <a asp-action="FeeBreakdown" 
+           class="list-group-item list-group-item-action py-3 d-flex align-items-center report-link @(currentAction == "FeeBreakdown" ? "active" : "")">
+            <i class="fas fa-chart-pie text-success me-3 fs-5"></i>
+            <span class="fw-bold">Fee Breakdown Report</span>
+        </a>
+        <a asp-action="FeeChallanPayment" 
+           class="list-group-item list-group-item-action py-3 d-flex align-items-center report-link @(currentAction == "FeeChallanPayment" ? "active" : "")">
+            <i class="fas fa-money-check text-success me-3 fs-5"></i>
+            <span class="fw-bold">Fee Challan Payment Report</span>
+        </a>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue {
+        background-color: #3f51b5;
+    }
+    .report-link {
+        border-bottom: 1px solid #ffc107 !important;
+        background-color: #1a237e;
+        color: rgba(255,255,255,0.8) !important;
+        transition: all 0.3s ease;
+    }
+    .report-link:hover {
+        background-color: #283593;
+        color: white !important;
+        padding-left: 1.5rem;
+    }
+    .report-link.active {
+        background-color: #3949ab !important;
+        color: white !important;
+        border-left: 4px solid #ffc107 !important;
+    }
+    .report-link i {
+        color: #8bc34a !important;
+    }
+</style>

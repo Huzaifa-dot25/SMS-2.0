@@ -1,0 +1,137 @@
+@model IEnumerable<StudentManagementSystem.Models.FeeSchedule>
+@{
+    ViewData["Title"] = "All Fee Schedules";
+}
+
+<div class="container-fluid mt-2 px-0">
+    <nav aria-label="breadcrumb" class="mx-3 mb-2">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <ol class="breadcrumb small mb-0">
+                <li class="breadcrumb-item"><a asp-action="Index">Fees</a></li>
+                <li class="breadcrumb-item"><a asp-action="Schedules">Schedule</a></li>
+                <li class="breadcrumb-item active">All Schedules</li>
+            </ol>
+            <a asp-action="Schedules" class="btn btn-sm btn-success shadow-sm">
+                <i class="fas fa-plus me-1"></i> Create New Schedule
+            </a>
+        </div>
+    </nav>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mx-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm mx-3 mb-4 overflow-hidden">
+        <div class="card-header bg-dark-blue py-3">
+            <h5 class="mb-0 text-white"><i class="fas fa-table me-2"></i>Fee Schedules List</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted">
+                        <tr>
+                            <th class="ps-4">Schedule Name</th>
+                            <th>Class</th>
+                            <th>Surcharge %</th>
+                            <th>Items Count</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 d-block text-secondary opacity-50"></i>
+                                    <p class="mb-0">No fee schedules found.</p>
+                                    <a asp-action="Schedules" class="btn btn-link">Create one now</a>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark">@item.ScheduleName</td>
+                                    <td>@(string.IsNullOrEmpty(item.ClassID) ? "All Classes" : item.ClassID)</td>
+                                    <td>@item.SurchargePercent%</td>
+                                    <td>
+                                        <span class="badge bg-light text-primary border border-primary-subtle">@item.Items.Count Items</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#items-@item.Id">
+                                            <i class="fas fa-eye me-1"></i> View Items
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="collapse bg-light" id="items-@item.Id">
+                                    <td colspan="5" class="p-4">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body p-0">
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead class="bg-dark-blue text-white small">
+                                                        <tr>
+                                                            <th class="ps-3">Frequency</th>
+                                                            <th>Fee Type</th>
+                                                            <th class="text-end pe-3">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var detail in item.Items)
+                                                        {
+                                                            <tr class="small">
+                                                                <td class="ps-3">@detail.Frequency</td>
+                                                                <td>@detail.FeeType</td>
+                                                                <td class="text-end pe-3 fw-bold">@detail.FeeAmount.ToString("N2")</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tfoot class="bg-light fw-bold small">
+                                                        <tr>
+                                                            <td colspan="2" class="text-end ps-3">Total Amount:</td>
+                                                            <td class="text-end pe-3 text-primary">@item.Items.Sum(i => i.FeeAmount).ToString("N2")</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue {
+        background-color: #1a237e;
+    }
+    .table thead th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 700;
+        border-top: none;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .badge {
+        font-weight: 600;
+        padding: 0.4em 0.7em;
+    }
+    .collapse.show {
+        display: table-row;
+    }
+    .table-hover tbody tr:hover {
+        background-color: rgba(26, 35, 126, 0.02);
+    }
+</style>

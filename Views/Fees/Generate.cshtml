@@ -1,0 +1,159 @@
+@model StudentManagementSystem.Models.GenerateChallanViewModel
+@{
+    ViewData["Title"] = "Generate Challan";
+}
+
+<div class="container-fluid mt-2 px-0">
+    <div class="card border-0 shadow-sm mx-3 overflow-hidden">
+        <div class="card-header bg-dark-blue py-3 px-4 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-white fw-bold">Generate Challan</h5>
+            <button class="btn btn-primary rounded-pill px-3 py-1 small fw-bold shadow-sm">
+                <i class="fas fa-paper-plane me-1"></i> Push to One Bill
+            </button>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Generate" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <label asp-for="Session" class="form-label small fw-bold">Session *</label>
+                        <select asp-for="Session" class="form-select border-secondary-subtle">
+                            <option value="">Select Session</option>
+                            @if (ViewBag.Sessions != null)
+                            {
+                                foreach (var session in ViewBag.Sessions)
+                                {
+                                    <option value="@session">@session</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="Session" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Class" class="form-label small fw-bold">Class *</label>
+                        <select asp-for="Class" class="form-select border-secondary-subtle">
+                            <option value="">Select Class</option>
+                            @if (ViewBag.Classes != null)
+                            {
+                                foreach (var cls in ViewBag.Classes)
+                                {
+                                    <option value="@cls">@cls</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="Class" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Section" class="form-label small fw-bold">Section *</label>
+                        <select asp-for="Section" class="form-select border-secondary-subtle">
+                            <option value="">Select Section</option>
+                            @if (ViewBag.Sections != null)
+                            {
+                                foreach (var sec in ViewBag.Sections)
+                                {
+                                    <option value="@sec">@sec</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="Section" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="StartMonth" class="form-label small fw-bold">Start Month *</label>
+                        <input asp-for="StartMonth" type="month" class="form-control border-secondary-subtle" />
+                        <span asp-validation-for="StartMonth" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <label asp-for="EndMonth" class="form-label small fw-bold">End Month *</label>
+                        <input asp-for="EndMonth" type="month" class="form-control border-secondary-subtle" />
+                        <span asp-validation-for="EndMonth" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="MonthsRange" class="form-label small fw-bold">Months Range *</label>
+                        <input asp-for="MonthsRange" class="form-control bg-light border-secondary-subtle" readonly placeholder="—" />
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="NumberOfMonths" class="form-label small fw-bold">Number of Months *</label>
+                        <input asp-for="NumberOfMonths" class="form-control bg-light border-secondary-subtle" readonly placeholder="0" />
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="DueDate" class="form-label small fw-bold">Due Date *</label>
+                        <input asp-for="DueDate" type="date" class="form-control border-secondary-subtle" />
+                        <span asp-validation-for="DueDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <label asp-for="ExpirePreviousUnpaid" class="form-label small fw-bold">Expire Previous Unpaid Challans?</label>
+                        <select asp-for="ExpirePreviousUnpaid" class="form-select border-secondary-subtle">
+                            <option value="false">No - keep previous unpaid challans</option>
+                            <option value="true">Yes - expire previous unpaid challans</option>
+                        </select>
+                        <p class="text-muted extra-small mt-2">
+                            <strong>Note:</strong> This option only affects <strong>UNPAID</strong> challans. Paid challans will remain untouched. Choose "Yes" to expire all unpaid challans for the student and carry forward the arrears.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-5">
+                    <a asp-action="Challans" class="btn btn-light px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold">Generate Challans</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue {
+        background-color: #1a237e;
+    }
+    .extra-small {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+    .form-label {
+        color: #555;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            function updateMonths() {
+                var start = $('#StartMonth').val();
+                var end = $('#EndMonth').val();
+                
+                if (start && end) {
+                    var startDate = new Date(start + '-01');
+                    var endDate = new Date(end + '-01');
+                    
+                    var months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth()) + 1;
+                    
+                    if (months > 0) {
+                        $('#NumberOfMonths').val(months);
+                        
+                        var startName = startDate.toLocaleString('default', { month: 'short' }) + '-' + startDate.getFullYear().toString().substr(-2);
+                        var endName = endDate.toLocaleString('default', { month: 'short' }) + '-' + endDate.getFullYear().toString().substr(-2);
+                        
+                        if (months == 1) {
+                            $('#MonthsRange').val(startName);
+                        } else {
+                            $('#MonthsRange').val(startName + ' to ' + endName);
+                        }
+                    } else {
+                        $('#NumberOfMonths').val(0);
+                        $('#MonthsRange').val('Invalid Range');
+                    }
+                }
+            }
+            
+            $('#StartMonth, #EndMonth').on('change', updateMonths);
+            updateMonths();
+        });
+    </script>
+}

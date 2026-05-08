@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Fees Module";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0 text-dark"><i class="fas fa-hand-holding-dollar me-2 text-primary"></i>Fees Management</h2>
+            <p class="text-muted mb-0">Centralized control for all financial operations</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Challans Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="Challans" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-primary-light text-primary rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-file-invoice-dollar fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">All Challans</h5>
+                    <p class="text-muted small">Generate, search, and manage student fee challans</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Schedules Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="Schedules" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-success-light text-success rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Fee Schedules</h5>
+                    <p class="text-muted small">Configure monthly and annual fee structures</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Payment Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="Payment" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-info-light text-info rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-money-bill-transfer fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Payments</h5>
+                    <p class="text-muted small">Record and verify fee payments and receipts</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Bank Data Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="BankData" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-warning-light text-warning rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-building-columns fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Bank Data</h5>
+                    <p class="text-muted small">Import and reconcile bank statements</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Quick Search Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="Challans" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-danger-light text-danger rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-magnifying-glass-dollar fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Quick Search</h5>
+                    <p class="text-muted small">Instantly find any challan by ID or Roll No</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Reports Card -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-action="Reports" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-shape bg-purple-light text-purple rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Reports</h5>
+                    <p class="text-muted small">Detailed financial analytics and recovery reports</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-primary-light { background-color: rgba(54, 153, 255, 0.1); }
+    .bg-success-light { background-color: rgba(27, 197, 189, 0.1); }
+    .bg-info-light { background-color: rgba(137, 80, 252, 0.1); }
+    .bg-warning-light { background-color: rgba(255, 168, 0, 0.1); }
+    .bg-danger-light { background-color: rgba(246, 73, 107, 0.1); }
+    .bg-purple-light { background-color: rgba(114, 57, 234, 0.1); }
+    
+    .text-purple { color: #7239ea; }
+    
+    .icon-shape {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .transition-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+</style>

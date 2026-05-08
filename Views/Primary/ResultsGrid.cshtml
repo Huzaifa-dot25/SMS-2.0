@@ -1,0 +1,280 @@
+@model StudentManagementSystem.Models.ResultsGridViewModel
+@{
+    ViewData["Title"] = "Results Grid";
+    bool filtered = Model.SelectedSession != null || Model.SelectedClass != null ||
+                    Model.SelectedSection != null || Model.SelectedTerm  != null;
+}
+
+<!-- Filter Bar -->
+<div class="card border-0 shadow-sm mb-4 no-print">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0 fw-bold text-warning"><i class="fas fa-th me-2"></i>Primary – Results Grid</h5>
+        @if (Model.ReportCards.Any())
+        {
+            <button onclick="window.print()" class="btn btn-warning btn-sm px-4 text-white">
+                <i class="fas fa-print me-2"></i>Print All Cards
+            </button>
+        }
+    </div>
+    <div class="card-body pb-2">
+        <form asp-action="ResultsGrid" method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Session</label>
+                    <select name="session" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- All Sessions --</option>
+                        @foreach (var s in (List<string>)ViewBag.Sessions)
+                        {
+                            <option value="@s" selected="@(s == Model.SelectedSession)">@s</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Class</label>
+                    <select name="className" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- All Classes --</option>
+                        @foreach (var c in (List<string>)ViewBag.Classes)
+                        {
+                            <option value="@c" selected="@(c == Model.SelectedClass)">@c</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Section</label>
+                    <select name="section" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- All --</option>
+                        @foreach (var s in (List<string>)ViewBag.Sections)
+                        {
+                            <option value="@s" selected="@(s == Model.SelectedSection)">@s</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Term</label>
+                    <select name="term" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- All Terms --</option>
+                        @foreach (var t in (List<string>)ViewBag.Terms)
+                        {
+                            <option value="@t" selected="@(t == Model.SelectedTerm)">@t</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-warning text-white shadow-sm flex-grow-1">
+                        <i class="fas fa-search me-1"></i>Search
+                    </button>
+                    @if (filtered)
+                    {
+                        <a asp-action="ResultsGrid" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Print Header -->
+<div class="print-header text-center mb-4" style="display:none;">
+    <h3 class="fw-bold">Primary School – Result Cards</h3>
+    <p class="text-muted">
+        @(Model.SelectedSession ?? "All Sessions") &nbsp;|&nbsp;
+        @(Model.SelectedClass   ?? "All Classes")  &nbsp;|&nbsp;
+        @(Model.SelectedTerm    ?? "All Terms")
+    </p>
+    <hr />
+</div>
+
+@if (!filtered)
+{
+    <div class="text-center py-5 text-muted">
+        <i class="fas fa-filter fa-3x mb-3 opacity-25"></i>
+        <p class="fs-5">Use the filters above to load student report cards.</p>
+        <p class="small">Select a session, class, section or term and click Search.</p>
+    </div>
+}
+else if (!Model.ReportCards.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <i class="fas fa-clipboard fa-3x mb-3 opacity-25"></i>
+        <p class="fs-5">No results found for the selected filters.</p>
+        <p class="small">Make sure results have been entered via <strong>Manage Result</strong> first.</p>
+    </div>
+}
+else
+{
+    <div class="mb-3 text-muted small no-print">
+        Showing <strong>@Model.ReportCards.Count</strong> report card(s)
+    </div>
+
+    <div class="row g-4" id="reportCardsGrid">
+        @foreach (var card in Model.ReportCards)
+        {
+            <div class="col-xl-6 report-card-col">
+                <div class="card border-0 shadow-sm report-card h-100">
+
+                    <!-- Card Header -->
+                    <div class="card-header bg-warning text-white py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex gap-3 align-items-center">
+                                @if (!string.IsNullOrEmpty(card.PhotoPath))
+                                {
+                                    <img src="@card.PhotoPath" class="rounded-circle border border-white"
+                                         style="width:52px;height:52px;object-fit:cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center"
+                                         style="width:52px;height:52px;flex-shrink:0;">
+                                        <i class="fas fa-user text-white fs-5"></i>
+                                    </div>
+                                }
+                                <div>
+                                    <h6 class="fw-bold mb-1 fs-5">@card.Name</h6>
+                                    <div class="small opacity-75">
+                                        @if (!string.IsNullOrEmpty(card.RollNo))
+                                        {
+                                            <span class="me-3"><i class="fas fa-hashtag me-1"></i>@card.RollNo</span>
+                                        }
+                                        <span class="me-3"><i class="fas fa-chalkboard me-1"></i>@card.Class – @card.Section</span>
+                                    </div>
+                                    <div class="small opacity-75 mt-1">
+                                        @if (!string.IsNullOrEmpty(card.FatherName))
+                                        {
+                                            <span class="me-3"><i class="fas fa-user me-1"></i>@card.FatherName</span>
+                                        }
+                                        <span><i class="fas fa-calendar me-1"></i>@card.Session</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center ms-2 flex-shrink-0">
+                                <div class="bg-white rounded-3 px-3 py-2">
+                                    <div class="fw-bold fs-4 text-@card.GradeColor">@card.Grade</div>
+                                    <div class="small text-muted">@card.Percentage%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <span class="badge bg-white text-warning">@card.Term</span>
+                            <span class="badge bg-white text-warning ms-1">Primary</span>
+                        </div>
+                    </div>
+
+                    <!-- Subjects Table -->
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Subject</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Obtained</th>
+                                    <th class="text-center">%</th>
+                                    <th class="text-center">Grade</th>
+                                    <th class="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sub in card.Subjects)
+                                {
+                                    var subPct = sub.TotalMarks > 0
+                                        ? Math.Round((double)(sub.ObtainedMarks / sub.TotalMarks) * 100, 0)
+                                        : 0;
+                                    var subGrade = subPct >= 90 ? "A+" : subPct >= 80 ? "A" : subPct >= 70 ? "B"
+                                                 : subPct >= 60 ? "C"  : subPct >= 50 ? "D" : "F";
+                                    var subColor = subGrade switch {
+                                        "A+" => "success", "A" => "primary", "B" => "info",
+                                        "C"  => "warning", "D" => "danger",  _   => "secondary"
+                                    };
+                                    var rowCss = sub.Status == "Absent" ? "table-danger" : "";
+                                    <tr class="@rowCss">
+                                        <td class="ps-3 fw-semibold">@sub.Subject</td>
+                                        <td class="text-center text-muted">@sub.TotalMarks</td>
+                                        <td class="text-center fw-bold">
+                                            @(sub.Status == "Absent" ? "–" : sub.ObtainedMarks.ToString())
+                                        </td>
+                                        <td class="text-center text-muted small">
+                                            @(sub.Status == "Absent" ? "–" : subPct + "%")
+                                        </td>
+                                        <td class="text-center">
+                                            @if (sub.Status != "Absent")
+                                            {
+                                                <span class="badge bg-@subColor bg-opacity-10 text-@subColor border border-@subColor">@subGrade</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (sub.Status == "Present")
+                                            {
+                                                <span class="badge bg-success">Present</span>
+                                            }
+                                            else if (sub.Status == "Absent")
+                                            {
+                                                <span class="badge bg-danger">Absent</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@sub.Status</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light fw-bold">
+                                <tr>
+                                    <td class="ps-3">Total</td>
+                                    <td class="text-center">@card.TotalMarks</td>
+                                    <td class="text-center">@card.TotalObtained</td>
+                                    <td class="text-center">@card.Percentage%</td>
+                                    <td class="text-center" colspan="2">
+                                        <span class="badge bg-@card.GradeColor">@card.Grade</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2 no-print">
+                        <small class="text-muted">
+                            <i class="fas fa-user-graduate me-1 text-warning"></i>ID: @card.StudentID
+                        </small>
+                        <button class="btn btn-outline-warning btn-sm" onclick="printSingleCard(this)">
+                            <i class="fas fa-print me-1"></i>Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+<style>
+    .report-card { transition: transform 0.2s; }
+    .report-card:hover { transform: translateY(-2px); }
+    @@media print {
+        .no-print, .sidebar, .top-bar, nav, header { display: none !important; }
+        .main-wrapper { margin-left: 0 !important; }
+        .print-header { display: block !important; }
+        body { background: white !important; }
+        .report-card { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; }
+        .report-card-col { width: 50% !important; float: left; padding: 8px; }
+        .card-header, .badge, .table-light, .table-danger { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        #reportCardsGrid { display: flex; flex-wrap: wrap; }
+    }
+</style>
+<script>
+    function printSingleCard(btn) {
+        const col = btn.closest('.report-card-col');
+        document.querySelectorAll('.report-card-col').forEach(c => {
+            c.style.display = c === col ? '' : 'none';
+        });
+        document.querySelector('.no-print.card')?.style.setProperty('display', 'none', 'important');
+        document.querySelector('.print-header').style.display = 'block';
+        window.print();
+        document.querySelectorAll('.report-card-col').forEach(c => c.style.display = '');
+        document.querySelector('.no-print.card')?.style.removeProperty('display');
+        document.querySelector('.print-header').style.display = 'none';
+    }
+</script>
+}

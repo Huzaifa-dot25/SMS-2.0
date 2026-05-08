@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Student Detail Report";
+}
+
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-header bg-dark text-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-info-circle me-2"></i>Student Detail Report Generator</h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="StudentDetailReport" method="get">
+            <div class="row g-4 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Session</label>
+                    <select name="session" class="form-select border-0 bg-light shadow-sm py-2">
+                        <option>-- Select Session --</option>
+                        @foreach (var s in ViewBag.Sessions) { <option value="@s" selected="@(Context.Request.Query["session"].ToString() == s)">@s</option> }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Class</label>
+                    <select name="className" class="form-select border-0 bg-light shadow-sm py-2">
+                        <option>-- Select Class --</option>
+                        @foreach (var c in ViewBag.Classes) { <option value="@c" selected="@(Context.Request.Query["className"].ToString() == c)">@c</option> }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Section <span class="text-danger">*</span></label>
+                    <select name="section" class="form-select border-0 bg-light shadow-sm py-2" required>
+                        <option value="">Select Section</option>
+                        @foreach (var s in ViewBag.Sections) { <option value="@s" selected="@(Context.Request.Query["section"].ToString() == s)">@s</option> }
+                    </select>
+                </div>
+                <div class="col-12 d-flex gap-3 justify-content-end mt-2">
+                    <button type="button" class="btn btn-outline-success rounded-pill px-4">
+                        <i class="fas fa-envelope me-2"></i>Send via Email
+                    </button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 shadow">
+                        <i class="fas fa-search me-2"></i>Search Records
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 card border-0 shadow-sm">
+    <div class="card-body py-5 text-center text-muted">
+        <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
+        <p>Results will appear here after searching</p>
+    </div>
+</div>

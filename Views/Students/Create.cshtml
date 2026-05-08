@@ -1,0 +1,551 @@
+@model StudentManagementSystem.Models.Student
+
+@{
+    ViewData["Title"] = "Create Student";
+}
+
+<div class="container-fluid mt-4 mb-5 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary-emphasis h4"><i class="fas fa-user-graduate me-2"></i>New Student Enrollment</h2>
+        <div>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-list me-1"></i> View All Students
+            </a>
+        </div>
+    </div>
+
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <style>
+            .nav-tabs .nav-link {
+                color: #495057;
+                font-weight: 500;
+                padding: 10px 15px;
+                border: 1px solid #dee2e6;
+                border-bottom: none;
+                background-color: #f8f9fa;
+                margin-right: 2px;
+                border-radius: 5px 5px 0 0;
+                font-size: 0.9rem;
+            }
+            .nav-tabs .nav-link.active {
+                background-color: #3f51b5 !important;
+                color: white !important;
+                border-color: #3f51b5;
+            }
+            .nav-tabs .nav-link i {
+                margin-right: 6px;
+            }
+            .section-header {
+                color: #3f51b5;
+                border-bottom: 2px solid #3f51b5;
+                padding-bottom: 5px;
+                margin-bottom: 20px;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+            .form-label {
+                font-size: 0.85rem;
+                font-weight: 500;
+                margin-bottom: 3px;
+                color: #444;
+            }
+            .form-control, .form-select {
+                font-size: 0.9rem;
+                border-radius: 4px;
+                border: 1px solid #ced4da;
+                padding: 6px 10px;
+            }
+            .required-star {
+                color: red;
+                margin-left: 2px;
+            }
+            .card {
+                border: 1px solid #dee2e6;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            .btn-save {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 4px;
+                font-weight: 500;
+            }
+            .btn-save:hover {
+                background-color: #218838;
+                color: white;
+            }
+        </style>
+
+        <div class="card bg-white">
+            <div class="card-header bg-light p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="studentTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="main-tab" data-bs-toggle="tab" data-bs-target="#main" type="button" role="tab"><i class="fas fa-user"></i>Main</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="additional-tab" data-bs-toggle="tab" data-bs-target="#additional" type="button" role="tab"><i class="fas fa-info-circle"></i>Additional Info</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="admission-tab" data-bs-toggle="tab" data-bs-target="#admission" type="button" role="tab"><i class="fas fa-calendar-check"></i>Admission</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="transport-tab" data-bs-toggle="tab" data-bs-target="#transport" type="button" role="tab"><i class="fas fa-bus"></i>Transport</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="intl-tab" data-bs-toggle="tab" data-bs-target="#intl" type="button" role="tab"><i class="fas fa-globe"></i>Intl. Details</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical" type="button" role="tab"><i class="fas fa-heartbeat"></i>Medical</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab"><i class="fas fa-file-alt"></i>Documents</button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card-body p-4">
+                <div class="tab-content" id="studentTabsContent">
+                    <!-- Tab 1: Main (Matches Screenshot Exactly) -->
+                    <div class="tab-pane fade show active" id="main" role="tabpanel">
+                        <div class="section-header">Student Information</div>
+                        
+                        <!-- 4-Column Grid -->
+                        <div class="row mb-3 g-3">
+                            <!-- Row 1 -->
+                            <div class="col-md-3">
+                                <label class="form-label">Student Photo</label>
+                                <input type="file" name="photoFile" class="form-control" accept="image/*" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Name" class="form-label">Name<span class="required-star">^</span></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="RegistrationDate" class="form-label">Registration Date<span class="required-star">^</span></label>
+                                <input asp-for="RegistrationDate" class="form-control" type="date" />
+                                <span asp-validation-for="RegistrationDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="MobileNo" class="form-label">Mobile No</label>
+                                <input asp-for="MobileNo" class="form-control" />
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="col-md-3">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="DateOfBirth" class="form-label">Date of Birth<span class="required-star">^</span></label>
+                                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="LandLine" class="form-label">Land Line</label>
+                                <input asp-for="LandLine" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Gender" class="form-label">Gender<span class="required-star">^</span></label>
+                                <select asp-for="Gender" class="form-select">
+                                    <option value="">-- Select Gender --</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Row 3 -->
+                            <div class="col-md-3">
+                                <label asp-for="InternationalLocal" class="form-label">International/Local</label>
+                                <select asp-for="InternationalLocal" class="form-select">
+                                    <option value="Local">Local</option>
+                                    <option value="International">International</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Status" class="form-label">Status</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="ApplicationStatus" class="form-label">Application Status<span class="required-star">^</span></label>
+                                <select asp-for="ApplicationStatus" class="form-select">
+                                    <option value="Applied">Applied</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Religion" class="form-label">Religion</label>
+                                <select asp-for="Religion" class="form-select">
+                                    <option value="">-- Select Religion --</option>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Christianity">Christianity</option>
+                                    <option value="Hinduism">Hinduism</option>
+                                    <option value="Buddhism">Buddhism</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Row 4 -->
+                            <div class="col-md-3">
+                                <label asp-for="Child" class="form-label">Child</label>
+                                <select asp-for="Child" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="TransferFrom" class="form-label">Transfer From</label>
+                                <select asp-for="TransferFrom" class="form-select">
+                                    <option value="">-- Select Transfer From --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="StaffChild" class="form-label">Staff Child</label>
+                                <select asp-for="StaffChild" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="LockerExists" class="form-label">Locker Exists</label>
+                                <select asp-for="LockerExists" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <!-- Row 5 -->
+                            <div class="col-md-3">
+                                <label asp-for="LockerID" class="form-label">Locker ID</label>
+                                <input asp-for="LockerID" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Active" class="form-label">Active</label>
+                                <select asp-for="Active" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Address" class="form-label">Address</label>
+                                <input asp-for="Address" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="section-header mt-4">Parents Information</div>
+                        <div class="row g-3">
+                            <!-- Row 1 -->
+                            <div class="col-md-3">
+                                <label asp-for="Parent.FatherName" class="form-label">Father's Name<span class="required-star">^</span></label>
+                                <input asp-for="Parent.FatherName" class="form-control" />
+                                <span asp-validation-for="Parent.FatherName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.FatherProfession" class="form-label">Father's Profession<span class="required-star">^</span></label>
+                                <input asp-for="Parent.FatherProfession" class="form-control" />
+                                <span asp-validation-for="Parent.FatherProfession" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.FatherMobile" class="form-label">Father's Mobile No<span class="required-star">^</span></label>
+                                <input asp-for="Parent.FatherMobile" class="form-control" />
+                                <span asp-validation-for="Parent.FatherMobile" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.FatherNIC" class="form-label">Father's NIC<span class="required-star">^</span></label>
+                                <input asp-for="Parent.FatherNIC" class="form-control" />
+                                <span asp-validation-for="Parent.FatherNIC" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="col-md-3">
+                                <label asp-for="Parent.FatherEmail" class="form-label">Father's Email</label>
+                                <input asp-for="Parent.FatherEmail" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.MotherName" class="form-label">Mother's Name</label>
+                                <input asp-for="Parent.MotherName" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.MotherProfession" class="form-label">Mother's Profession</label>
+                                <input asp-for="Parent.MotherProfession" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.MotherMobile" class="form-label">Mother's Mobile</label>
+                                <input asp-for="Parent.MotherMobile" class="form-control" />
+                            </div>
+
+                            <!-- Row 3 -->
+                            <div class="col-md-3">
+                                <label asp-for="Parent.MotherNIC" class="form-label">Mother's NIC</label>
+                                <input asp-for="Parent.MotherNIC" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Parent.MotherEmail" class="form-label">Mother's Email</label>
+                                <input asp-for="Parent.MotherEmail" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Additional -->
+                    <div class="tab-pane fade" id="additional" role="tabpanel">
+                        <div class="section-header">Tax Information</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.TaxPayerName" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.TaxPayerName" class="form-control" />
+                                <span asp-validation-for="AdditionalInfo.TaxPayerName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.Business" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.Business" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.NIC" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.NIC" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.NTN" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.NTN" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="AdditionalInfo.TaxPayerAddress" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.TaxPayerAddress" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.TaxPayerCity" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.TaxPayerCity" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.ActiveTaxPayer" class="form-label"></label>
+                                <select asp-for="AdditionalInfo.ActiveTaxPayer" class="form-select">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="section-header mt-4">Guardian Information</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.GuardianName" class="form-label required-label">Guardian Name<span class="required-star">^</span></label>
+                                <input asp-for="AdditionalInfo.GuardianName" class="form-control" />
+                                <span asp-validation-for="AdditionalInfo.GuardianName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.GuardianRelation" class="form-label">Guardian Relation</label>
+                                <input asp-for="AdditionalInfo.GuardianRelation" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.GuardianMobileNo" class="form-label required-label">Guardian Mobile No<span class="required-star">^</span></label>
+                                <input asp-for="AdditionalInfo.GuardianMobileNo" class="form-control" />
+                                <span asp-validation-for="AdditionalInfo.GuardianMobileNo" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.GuardianEmail" class="form-label">Guardian Email</label>
+                                <input asp-for="AdditionalInfo.GuardianEmail" class="form-control" />
+                            </div>
+                            <div class="col-md-12">
+                                <label asp-for="AdditionalInfo.GuardianAddress" class="form-label">Guardian Address</label>
+                                <textarea asp-for="AdditionalInfo.GuardianAddress" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="section-header mt-4">School Leaving Information</div>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.SchoolLeavingCertificateNo" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.SchoolLeavingCertificateNo" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.SchoolLeavingDate" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.SchoolLeavingDate" class="form-control" type="date" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.Performance" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.Performance" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="AdditionalInfo.Behaviour" class="form-label"></label>
+                                <input asp-for="AdditionalInfo.Behaviour" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="AdditionalInfo.Certificates" class="form-label">Certificates Collected</label>
+                                <select asp-for="AdditionalInfo.Certificates" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Original">Original</option>
+                                    <option value="Duplicate">Duplicate</option>
+                                    <option value="None">None</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="AdditionalInfo.ReasonForLeaving" class="form-label"></label>
+                                <textarea asp-for="AdditionalInfo.ReasonForLeaving" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simplified placeholders for other tabs to focus on the 'Main' tab requirement -->
+                    <div class="tab-pane fade" id="admission" role="tabpanel">
+                        <div class="section-header">Admission Info</div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label asp-for="Admission.TestDate" class="form-label"></label>
+                                <input asp-for="Admission.TestDate" class="form-control" type="date" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.TestCleared" class="form-label"></label>
+                                <select asp-for="Admission.TestCleared" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.ConductedBy" class="form-label"></label>
+                                <input asp-for="Admission.ConductedBy" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.Remarks" class="form-label"></label>
+                                <input asp-for="Admission.Remarks" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="section-header">Assign Class</div>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label asp-for="Admission.Session" class="form-label"></label>
+                                <select asp-for="Admission.Session" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    <option value="2023-2024">2023-2024</option>
+                                    <option value="2024-2025">2024-2025</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                 <label asp-for="Admission.RequestedClass" class="form-label"></label>
+                                 <select asp-for="Admission.RequestedClass" class="form-select">
+                                     <option value="">-- Select --</option>
+                                     @if (ViewBag.Classes != null)
+                                     {
+                                         @foreach (var c in ViewBag.Classes)
+                                         {
+                                             <option value="@c">@c</option>
+                                         }
+                                     }
+                                 </select>
+                             </div>
+                             <div class="col-md-3">
+                                 <label asp-for="Admission.Class" class="form-label"></label>
+                                 <select asp-for="Admission.Class" class="form-select">
+                                     <option value="">-- Select --</option>
+                                     @if (ViewBag.Classes != null)
+                                     {
+                                         @foreach (var c in ViewBag.Classes)
+                                         {
+                                             <option value="@c">@c</option>
+                                         }
+                                     }
+                                 </select>
+                             </div>
+                             <div class="col-md-3">
+                                 <label asp-for="Admission.Section" class="form-label"></label>
+                                 <select asp-for="Admission.Section" class="form-select">
+                                     <option value="">-- Select --</option>
+                                     @if (ViewBag.Sections != null)
+                                     {
+                                         @foreach (var s in ViewBag.Sections)
+                                         {
+                                             <option value="@s">@s</option>
+                                         }
+                                     }
+                                 </select>
+                             </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.ActiveInClass" class="form-label">Active In Class</label>
+                                <select asp-for="Admission.ActiveInClass" class="form-select">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.DbStatus" class="form-label">DB Status</label>
+                                <select asp-for="Admission.DbStatus" class="form-select">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Admission.RollNo" class="form-label">Roll No</label>
+                                <input asp-for="Admission.RollNo" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="transport" role="tabpanel px-3 py-3">
+                        <div class="section-header">Transport Details</div>
+                        <p class="text-muted">Transport and route assignment fields.</p>
+                    </div>
+                    <div class="tab-pane fade" id="intl" role="tabpanel px-3 py-3">
+                        <div class="section-header">International Details</div>
+                        <p class="text-muted">Passport and Visa information.</p>
+                    </div>
+                    <div class="tab-pane fade" id="medical" role="tabpanel px-3 py-3">
+                        <div class="section-header">Medical Records</div>
+                        <p class="text-muted">Blood group and allergy details.</p>
+                    </div>
+                    <div class="tab-pane fade" id="documents" role="tabpanel px-3 py-3">
+                        <div class="section-header">Document Repository</div>
+                        <input type="file" name="documentFiles" class="form-control" multiple />
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white border-top-0 d-flex justify-content-end p-3">
+                <button type="submit" class="btn-save shadow-sm">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            // Configure jQuery validation to NOT ignore hidden elements in tabs
+            var validator = $('form').data('validator');
+            if (validator) {
+                validator.settings.ignore = "";
+            }
+
+            // Smart Tab Switcher: Focus the first tab that has an error
+            $('form').on('invalid-form.validate', function(event, validator) {
+                var errors = validator.numberOfInvalids();
+                if (errors) {
+                    var firstInvalidElement = $(validator.errorList[0].element);
+                    var tabPane = firstInvalidElement.closest('.tab-pane');
+                    if (tabPane.length) {
+                        var tabId = tabPane.attr('id');
+                        var tabButton = $('button[data-bs-target="#' + tabId + '"]');
+                        if (tabButton.length) {
+                            tabButton.tab('show');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

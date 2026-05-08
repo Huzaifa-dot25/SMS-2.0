@@ -1,0 +1,132 @@
+@model IEnumerable<StudentManagementSystem.Models.Student>
+@{
+    ViewData["Title"] = "Manage Results";
+}
+
+<div class="card border-0 shadow-sm manage-results-zoom">
+    <div class="card-header bg-white py-3 border-0">
+        <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-edit me-2"></i>Result Management</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="row g-0">
+            <!-- Filter Sidebar -->
+            <div class="col-md-3 border-end bg-light p-4">
+                <h6 class="fw-bold mb-4 text-muted small uppercase">Examination Filters</h6>
+                <form asp-action="ManageResult" method="get" class="zoom-form">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Session</label>
+                        <select name="session" class="form-select border-0 shadow-sm">
+                            <option>2025 - 2026</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Class</label>
+                        <select name="className" class="form-select border-0 shadow-sm" onchange="this.form.submit()">
+                            <option value="">-- Select Class --</option>
+                            @foreach (var c in ViewBag.Classes) { <option value="@c" selected="@(Context.Request.Query["className"].ToString() == c)">@c</option> }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Section</label>
+                        <select name="section" class="form-select border-0 shadow-sm">
+                            <option value="">-- Select Section --</option>
+                            @foreach (var s in ViewBag.Sections) { <option value="@s" selected="@(Context.Request.Query["section"].ToString() == s)">@s</option> }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Subject</label>
+                        <select name="subject" class="form-select border-0 shadow-sm">
+                            <option value="">Mathematics</option>
+                            <option value="">English</option>
+                            <option value="">Science</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-2 shadow-sm rounded-pill">
+                        <i class="fas fa-sync-alt me-2"></i>Apply Filters
+                    </button>
+                </form>
+            </div>
+
+            <!-- Student List -->
+            <div class="col-md-9 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <span class="badge bg-soft-danger text-danger me-2">Ignore</span>
+                        <span class="badge bg-soft-success text-success me-2">Present</span>
+                        <span class="badge bg-soft-warning text-warning">Pending</span>
+                    </div>
+                    <button class="btn btn-success rounded-pill px-4 shadow-sm fw-bold">
+                        <i class="fas fa-save me-2"></i>Save All Results
+                    </button>
+                </div>
+
+                <div class="scrollable-table-container shadow-sm rounded border">
+                    <table class="table table-hover align-middle mb-0 zoomed-table">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th class="ps-4" style="width: 60%">Status & Marks</th>
+                                <th>Student Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var student in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="btn-group btn-group-sm rounded-pill overflow-hidden border shadow-sm">
+                                                    <input type="radio" class="btn-check" name="status_@student.StudentID" id="ignore_@student.StudentID">
+                                                    <label class="btn btn-outline-danger border-0 px-3" for="ignore_@student.StudentID">Ignore</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="status_@student.StudentID" id="present_@student.StudentID" checked>
+                                                    <label class="btn btn-outline-success border-0 px-3" for="present_@student.StudentID">Present</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="status_@student.StudentID" id="pending_@student.StudentID">
+                                                    <label class="btn btn-outline-warning border-0 px-3" for="pending_@student.StudentID">Pending</label>
+                                                </div>
+                                                <div class="input-group input-group-sm" style="width: 120px;">
+                                                    <input type="number" class="form-control border-0 bg-light fw-bold" placeholder="Marks" />
+                                                    <span class="input-group-text border-0 bg-light text-muted small">/ 100</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-dark">@student.Name</div>
+                                            <div class="text-muted extra-small">ID: #@student.StudentID</div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" class="text-center py-5">
+                                        <i class="fas fa-users-slash fa-3x text-muted opacity-25 mb-3"></i>
+                                        <p class="text-muted">Select filters to load students</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .manage-results-zoom { font-size: 1.1rem; } /* Zoomed in feel */
+    .zoomed-table td, .zoomed-table th { padding: 1.25rem 1rem; }
+    .scrollable-table-container { height: 600px; overflow-y: auto; background: white; }
+    .bg-soft-danger { background-color: #ffeaea; }
+    .bg-soft-success { background-color: #eaffea; }
+    .bg-soft-warning { background-color: #fff8ea; }
+    .extra-small { font-size: 0.75rem; }
+    .uppercase { text-transform: uppercase; letter-spacing: 1px; }
+    .zoom-form .form-label { font-size: 0.9rem; }
+    .btn-group .btn-outline-success:checked + label { background-color: #28a745; color: white; }
+    .btn-group .btn-outline-danger:checked + label { background-color: #dc3545; color: white; }
+    .btn-group .btn-outline-warning:checked + label { background-color: #ffc107; color: white; }
+</style>

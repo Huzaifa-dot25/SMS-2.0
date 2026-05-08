@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Primary - View Statements by Class";
+}
+
+<div class="card border-0 shadow-sm" style="border-radius: 20px;">
+    <div class="card-header bg-white py-4 px-4 border-0">
+        <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-users-rectangle me-3 text-danger"></i>View Statements by Class</h4>
+        <p class="mb-0 text-muted small">Summary of descriptive feedback categorized by class and section.</p>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Select Class</label>
+                <select class="form-select border-0 bg-light py-2">
+                    <option>Class 1</option>
+                    <option>Class 2</option>
+                    <option selected>Class 3</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Select Section</label>
+                <select class="form-select border-0 bg-light py-2">
+                    <option>Section A</option>
+                    <option>Section B</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-danger w-100 py-2 rounded-pill shadow-sm"><i class="fas fa-filter me-2"></i>Filter View</button>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-none bg-light p-4 rounded-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-white rounded-circle p-2 me-3 shadow-sm">
+                                <i class="fas fa-user-graduate text-primary"></i>
+                            </div>
+                            <h6 class="fw-bold mb-0">Ahmed Hassan <span class="text-muted small ms-2">#10293</span></h6>
+                        </div>
+                        <span class="badge bg-white text-dark shadow-sm px-3 rounded-pill">Class 3-A</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                <label class="fw-bold text-success small mb-1"><i class="fas fa-book me-2"></i>Academic Feedback</label>
+                                <p class="small mb-0 text-muted italic">"Ahmed is showing consistent improvement in mathematics. He needs to focus more on word problems."</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                <label class="fw-bold text-info small mb-1"><i class="fas fa-smile me-2"></i>Behavioral Feedback</label>
+                                <p class="small mb-0 text-muted italic">"A very cooperative student who follows all class rules and helps fellow classmates."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-none bg-light p-4 rounded-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-white rounded-circle p-2 me-3 shadow-sm">
+                                <i class="fas fa-user-graduate text-primary"></i>
+                            </div>
+                            <h6 class="fw-bold mb-0">Zoya Khan <span class="text-muted small ms-2">#10305</span></h6>
+                        </div>
+                        <span class="badge bg-white text-dark shadow-sm px-3 rounded-pill">Class 3-A</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                <label class="fw-bold text-success small mb-1"><i class="fas fa-book me-2"></i>Academic Feedback</label>
+                                <p class="small mb-0 text-muted italic">"Excellent reading skills. Zoya is one of the top performers in English Language."</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-white rounded-3 shadow-sm h-100">
+                                <label class="fw-bold text-info small mb-1"><i class="fas fa-smile me-2"></i>Behavioral Feedback</label>
+                                <p class="small mb-0 text-muted italic">"Very active in class discussions. Highly recommended for class leadership roles."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .italic { font-style: italic; }
+</style>

@@ -1,0 +1,424 @@
+@model StudentManagementSystem.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Executive Dashboard";
+}
+
+<div class="container-fluid px-4 py-4 mb-5">
+    <!-- Header & Quick Actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">Executive Dashboard</h3>
+            <p class="text-muted mb-0">Overview of student management and financial status.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Students" asp-action="Create" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-plus me-2"></i>New Student
+            </a>
+            <a asp-controller="Seed" asp-action="Index" class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">
+                <i class="fas fa-seedling me-2"></i>Seed Students
+            </a>
+            <button class="btn btn-white shadow-sm border rounded-pill px-4" onclick="window.print()">
+                <i class="fas fa-print me-2"></i>Print Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards Grid -->
+    <div class="row g-4 mb-4">
+        <!-- Total Students -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0 bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+                            <i class="fas fa-users fs-4"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-0 fw-semibold small">TOTAL STUDENTS</h6>
+                            <h3 class="mb-0 fw-bold">@Model.TotalStudents</h3>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center small text-muted">
+                        <span class="text-success me-1"><i class="fas fa-check-circle me-1"></i>@Model.ActiveStudents</span> Active in system
+                    </div>
+                </div>
+                <div class="progress rounded-0" style="height: 4px;">
+                    <div class="progress-bar bg-primary" style="width: @(Model.TotalStudents > 0 ? (Model.ActiveStudents * 100 / Model.TotalStudents) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Total Revenue -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0 bg-success bg-opacity-10 text-success p-3 rounded-3">
+                            <i class="fas fa-sack-dollar fs-4"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-0 fw-semibold small">TOTAL REVENUE</h6>
+                            <h3 class="mb-0 fw-bold">@Model.TotalRevenue.ToString("C0")</h3>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center small text-muted">
+                        <span class="text-info me-1">@Model.PaidChallansCount</span> Paid challans processed
+                    </div>
+                </div>
+                <div class="progress rounded-0" style="height: 4px;">
+                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Pending Fees -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0 bg-danger bg-opacity-10 text-danger p-3 rounded-3">
+                            <i class="fas fa-file-invoice-dollar fs-4"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-0 fw-semibold small">PENDING FEES</h6>
+                            <h3 class="mb-0 fw-bold">@Model.PendingFees.ToString("C0")</h3>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center small text-muted">
+                        <span class="text-danger me-1">@Model.UnpaidChallansCount</span> Unpaid challans remaining
+                    </div>
+                </div>
+                <div class="progress rounded-0" style="height: 4px;">
+                    @{
+                        var totalFees = Model.TotalRevenue + Model.PendingFees;
+                        var pendingPercent = totalFees > 0 ? (int)(Model.PendingFees * 100 / totalFees) : 0;
+                    }
+                    <div class="progress-bar bg-danger" style="width: @pendingPercent%"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Staff Children -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0 bg-info bg-opacity-10 text-info p-3 rounded-3">
+                            <i class="fas fa-user-graduate fs-4"></i>
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="text-muted mb-0 fw-semibold small">STAFF CHILDREN</h6>
+                            <h3 class="mb-0 fw-bold">@Model.StaffChildCount</h3>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center small text-muted">
+                        <span class="text-secondary me-1">@Model.RegularStudentCount</span> Regular students
+                    </div>
+                </div>
+                <div class="progress rounded-0" style="height: 4px;">
+                    <div class="progress-bar bg-info" style="width: @(Model.TotalStudents > 0 ? (Model.StaffChildCount * 100 / Model.TotalStudents) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Main Growth Chart & Gender Dist -->
+    <div class="row g-4 mb-4">
+        <!-- Admissions Growth Chart -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Admissions Growth</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light rounded-pill border" type="button" data-bs-toggle="dropdown">
+                            Last 6 Months <i class="fas fa-chevron-down ms-1 small"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Last 12 Months</a></li>
+                            <li><a class="dropdown-item" href="#">Current Year</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="height: 350px;">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Gender Demographics -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">Gender Distribution</h5>
+                </div>
+                <div class="card-body px-4 pb-4 d-flex flex-column justify-content-center">
+                    <div style="height: 250px;">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="fas fa-mars text-primary me-2"></i>Male</span>
+                            <span class="fw-bold">@Model.MaleStudentsCount</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span><i class="fas fa-venus text-pink me-2" style="color: #e83e8c;"></i>Female</span>
+                            <span class="fw-bold">@Model.FemaleStudentsCount</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Class Distribution & Fee Status -->
+    <div class="row g-4 mb-4">
+        <!-- Students by Class -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">Students by Class</h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="height: 300px;">
+                        <canvas id="classChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fee Status Doughnut -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">Fee Collection Status</h5>
+                </div>
+                <div class="card-body px-4 pb-4 d-flex align-items-center">
+                    <div style="height: 250px; width: 250px;" class="mx-auto">
+                        <canvas id="feeChart"></canvas>
+                    </div>
+                    <div class="ms-4">
+                        <div class="mb-3">
+                            <h3 class="mb-0 fw-bold text-success">@Model.PaidChallansCount</h3>
+                            <small class="text-muted text-uppercase fw-semibold">Paid Challans</small>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold text-danger">@Model.UnpaidChallansCount</h3>
+                            <small class="text-muted text-uppercase fw-semibold">Pending Payment</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 4: Tables -->
+    <div class="row g-4 mb-4">
+        <!-- Upcoming Deadlines -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-danger"><i class="fas fa-clock me-2"></i>Upcoming Deadlines</h5>
+                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Next 7 Days</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted small text-uppercase">
+                                    <th class="ps-4 border-0">Student</th>
+                                    <th class="border-0">Due Date</th>
+                                    <th class="border-0 text-end pe-4">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.UpcomingDeadlines != null && Model.UpcomingDeadlines.Any())
+                                {
+                                    foreach (var challan in Model.UpcomingDeadlines)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="fw-bold text-dark">@(challan.Student?.Name ?? "N/A")</div>
+                                                <small class="text-muted">Class @challan.ClassName</small>
+                                            </td>
+                                            <td>
+                                                <div class="badge @(challan.DueDate == DateTime.Today ? "bg-warning" : "bg-light text-dark") border">
+                                                    @challan.DueDate.ToString("MMM dd")
+                                                </div>
+                                            </td>
+                                            <td class="text-end pe-4 fw-bold text-danger">@challan.Amount.ToString("C")</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center py-5 text-muted">
+                                            <i class="fas fa-check-circle fs-2 text-success opacity-25 d-block mb-2"></i>
+                                            No urgent deadlines for the next 7 days.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Recent Admissions -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-history me-2 text-primary"></i>Recent Activity</h5>
+                    <a asp-controller="Students" asp-action="Index" class="btn btn-sm btn-light border rounded-pill">View History</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted small text-uppercase">
+                                    <th class="ps-4 border-0">Student</th>
+                                    <th class="border-0">Registration</th>
+                                    <th class="border-0 text-end pe-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentStudents != null && Model.RecentStudents.Any())
+                                {
+                                    foreach (var student in Model.RecentStudents)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="fw-bold text-dark">@student.Name</div>
+                                                <small class="text-muted">@student.Email</small>
+                                            </td>
+                                            <td>@student.RegistrationDate.ToString("MMM dd, yyyy")</td>
+                                            <td class="text-end pe-4">
+                                                <span class="badge @(student.Status == "Active" ? "bg-success" : "bg-warning") bg-opacity-10 text-@(student.Status == "Active" ? "success" : "warning") border border-@(student.Status == "Active" ? "success" : "warning") px-3">
+                                                    @student.Status
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center py-5 text-muted">No recent records.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Global Config
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#7e8299';
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.borderRadius = 8;
+
+            // 1. Growth Chart (Line)
+            var ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            var growthGradient = ctxGrowth.createLinearGradient(0, 0, 0, 400);
+            growthGradient.addColorStop(0, 'rgba(13, 110, 253, 0.2)');
+            growthGradient.addColorStop(1, 'rgba(13, 110, 253, 0)');
+
+            new Chart(ctxGrowth, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.MonthlyAdmissionsLabels)),
+                    datasets: [{
+                        label: 'New Admissions',
+                        data: @Html.Raw(Json.Serialize(Model.MonthlyAdmissionsData)),
+                        borderColor: '#0d6efd',
+                        borderWidth: 3,
+                        fill: true,
+                        backgroundColor: growthGradient,
+                        tension: 0.4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0d6efd',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5], drawBorder: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Gender Pie Chart
+            new Chart(document.getElementById('genderChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Male', 'Female'],
+                    datasets: [{
+                        data: [@Model.MaleStudentsCount, @Model.FemaleStudentsCount],
+                        backgroundColor: ['#0d6efd', '#e83e8c'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 3. Class Distribution (Bar)
+            new Chart(document.getElementById('classChart'), {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.ClassDistributionLabels)),
+                    datasets: [{
+                        label: 'Students',
+                        data: @Html.Raw(Json.Serialize(Model.ClassDistributionData)),
+                        backgroundColor: '#6610f2',
+                        borderRadius: 6,
+                        barThickness: 25
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5], drawBorder: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 4. Fee Doughnut
+            new Chart(document.getElementById('feeChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Unpaid'],
+                    datasets: [{
+                        data: [@Model.PaidChallansCount, @Model.UnpaidChallansCount],
+                        backgroundColor: ['#198754', '#dc3545'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        });
+    </script>
+}

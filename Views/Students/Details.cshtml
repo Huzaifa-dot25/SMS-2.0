@@ -1,0 +1,250 @@
+@model StudentManagementSystem.Models.Student
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1"><i class="fas fa-user-graduate me-2 text-primary"></i>@Model.Name</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-action="Index">Students</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Details</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.StudentID" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i> Edit
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar Info -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body text-center p-4">
+                    @if (!string.IsNullOrEmpty(Model.PhotoPath))
+                    {
+                        <img src="@Model.PhotoPath" alt="Photo" class="rounded-circle shadow-sm mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px;">
+                            <i class="fas fa-user fa-5x text-secondary"></i>
+                        </div>
+                    }
+                    <h4 class="fw-bold">@Model.Name</h4>
+                    <span class="badge bg-primary px-3 py-2 mb-3">@Model.Status</span>
+                    
+                    <div class="text-start mt-4">
+                        <div class="d-flex mb-2">
+                            <span class="text-muted w-50">Reg No:</span>
+                            <span class="fw-600">@(Model.Admission?.RollNo ?? "N/A")</span>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <span class="text-muted w-50">Gender:</span>
+                            <span class="fw-600">@Model.Gender</span>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <span class="text-muted w-50">DOB:</span>
+                            <span class="fw-600">@Model.DateOfBirth.ToShortDateString()</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-light p-2 me-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Email</div>
+                            <div class="fw-600">@(Model.Email ?? "N/A")</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-light p-2 me-3">
+                            <i class="fas fa-mobile-alt text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Mobile</div>
+                            <div class="fw-600">@(Model.MobileNo ?? "N/A")</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-light p-2 me-3">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Address</div>
+                            <div class="fw-600">@(Model.Address ?? "N/A")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Info Tabs -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 p-0">
+                    <ul class="nav nav-tabs nav-fill border-0" id="detailTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active py-3 fw-600 border-0 border-bottom-primary" id="admission-tab" data-bs-toggle="tab" href="#admission" role="tab">Admission</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-3 fw-600 border-0" id="parent-tab" data-bs-toggle="tab" href="#parent" role="tab">Parent/Guardian</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-3 fw-600 border-0" id="academic-tab" data-bs-toggle="tab" href="#academic" role="tab">Other Details</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content" id="detailTabsContent">
+                        <!-- Admission Tab -->
+                        <div class="tab-pane fade show active" id="admission" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Session</label>
+                                    <span class="fw-600">@(Model.Admission?.Session ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Class / Section</label>
+                                    <span class="fw-600">@(Model.Admission?.Class ?? "N/A") - @(Model.Admission?.Section ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Test Date</label>
+                                    <span class="fw-600">@(Model.Admission?.TestDate?.ToShortDateString() ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Test Cleared</label>
+                                    <span class="fw-600">@(Model.Admission?.TestCleared ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="text-muted small d-block">Remarks</label>
+                                    <p class="mb-0">@(Model.Admission?.Remarks ?? "No remarks available.")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Parent Tab -->
+                        <div class="tab-pane fade" id="parent" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Father's Name</label>
+                                    <span class="fw-600">@(Model.Parent?.FatherName ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Father's NIC</label>
+                                    <span class="fw-600">@(Model.Parent?.FatherNIC ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Mother's Name</label>
+                                    <span class="fw-600">@(Model.Parent?.MotherName ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Father's Profession</label>
+                                    <span class="fw-600">@(Model.Parent?.FatherProfession ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="text-muted small d-block">Guardian Mobile (Emergency)</label>
+                                    <span class="fw-600">@(Model.AdditionalInfo?.GuardianMobileNo ?? Model.Parent?.FatherMobile ?? "N/A")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Details Tab -->
+                        <div class="tab-pane fade" id="academic" role="tabpanel">
+                            <h6 class="fw-bold mb-3">Additional Information</h6>
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Religion</label>
+                                    <span class="fw-600">@(Model.Religion ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Staff Child</label>
+                                    <span class="fw-600">@(Model.StaffChild ?? "No")</span>
+                                </div>
+                            </div>
+                            
+                            <h6 class="fw-bold mb-3">Medical & Transport</h6>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Blood Group</label>
+                                    <span class="fw-600">@(Model.MedicalDetail?.BloodGroup ?? "N/A")</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small d-block">Transport</label>
+                                    <span class="fw-600">@(Model.Transport?.BusNumber != null ? $"Bus ({Model.Transport.BusNumber})" : "Private")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Documents List -->
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Documents</h5>
+                    <span class="badge bg-secondary">@Model.Documents.Count Files</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Documents != null && Model.Documents.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var doc in Model.Documents)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="far fa-file-pdf fa-2x text-danger me-3"></i>
+                                        <div>
+                                            <div class="fw-600">@doc.DocumentName</div>
+                                        </div>
+                                    </div>
+                                    <a href="@doc.FilePath" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download me-1"></i> View
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+                            <p class="mb-0">No documents uploaded.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .border-bottom-primary {
+            border-bottom: 2px solid var(--sidebar-active) !important;
+            color: var(--sidebar-active) !important;
+        }
+        .fw-600 { font-weight: 600; }
+        .nav-tabs .nav-link { color: #7e8299; transition: all 0.3s ease; }
+        .nav-tabs .nav-link:hover { color: var(--sidebar-active); background: #f9f9f9; }
+        .nav-tabs .nav-link.active { color: var(--sidebar-active); border-bottom: 2px solid var(--sidebar-active) !important; background: transparent; }
+    </style>
+}

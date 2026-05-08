@@ -1,0 +1,150 @@
+@model IEnumerable<StudentManagementSystem.Models.Student>
+@{
+    ViewData["Title"] = "Primary - Manage Result";
+}
+
+<div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
+    <div class="card-header bg-dark-blue text-white py-4 px-4 border-0">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-1 fw-bold"><i class="fas fa-edit me-3 text-warning"></i>Primary Assessment</h4>
+                <p class="mb-0 opacity-75 small">Manage marks and examination status for primary students.</p>
+            </div>
+            <button class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="row g-0">
+            <!-- Filter Panel -->
+            <div class="col-md-3 border-end bg-light p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary text-white rounded-circle p-2 me-3">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 text-dark">Selection Panel</h6>
+                </div>
+                
+                <form asp-action="ManageResult" method="get">
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-muted">ACADEMIC SESSION</label>
+                        <select name="session" class="form-select border-0 shadow-sm py-2 px-3 bg-white" style="border-radius: 12px;">
+                            <option>2025 - 2026</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-muted">SELECT CLASS</label>
+                        <select name="className" class="form-select border-0 shadow-sm py-2 px-3 bg-white" style="border-radius: 12px;" onchange="this.form.submit()">
+                            <option value="">-- Choose Class --</option>
+                            @if (ViewBag.Classes != null) {
+                                @foreach (var c in ViewBag.Classes) { 
+                                    <option value="@c" selected="@(Context.Request.Query["className"].ToString() == c)">@c</option> 
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-muted">SECTION</label>
+                        <select name="section" class="form-select border-0 shadow-sm py-2 px-3 bg-white" style="border-radius: 12px;">
+                            <option value="">-- All Sections --</option>
+                            @if (ViewBag.Sections != null) {
+                                @foreach (var s in ViewBag.Sections) { 
+                                    <option value="@s" selected="@(Context.Request.Query["section"].ToString() == s)">@s</option> 
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-600 small text-muted">SUBJECT</label>
+                        <select name="subject" class="form-select border-0 shadow-sm py-2 px-3 bg-white" style="border-radius: 12px;">
+                            <option value="">General Science</option>
+                            <option value="">Social Studies</option>
+                            <option value="">Mathematics</option>
+                            <option value="">English Language</option>
+                            <option value="">Urdu</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-dark-blue w-100 py-2 rounded-pill shadow-sm">
+                        <i class="fas fa-search me-2"></i>Fetch Students
+                    </button>
+                </form>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9 p-4 bg-white">
+                <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold text-muted mb-0">STUDENT LIST <span class="badge bg-soft-primary text-primary ms-2">@(Model?.Count() ?? 0) Students</span></h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">Download Template</button>
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">Import Data</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive rounded-3 overflow-hidden shadow-sm border">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3" style="width: 100px;">Roll No</th>
+                                <th class="py-3">Student Name</th>
+                                <th class="py-3">Father's Name</th>
+                                <th class="py-3 text-center" style="width: 250px;">Status & Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var student in Model)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-primary">#@student.StudentID</td>
+                                        <td>
+                                            <div class="fw-bold">@student.Name</div>
+                                            <div class="text-muted small">@student.Admission?.Class - @student.Admission?.Section</div>
+                                        </td>
+                                        <td>@student.Parent?.FatherName</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <select class="form-select form-select-sm border-0 bg-light" style="width: 100px; border-radius: 8px;">
+                                                    <option>Present</option>
+                                                    <option>Absent</option>
+                                                    <option>Leave</option>
+                                                </select>
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" class="form-control border-0 bg-light text-center fw-bold" placeholder="00" style="width: 60px; border-radius: 8px 0 0 8px;">
+                                                    <span class="input-group-text border-0 bg-light text-muted small" style="border-radius: 0 8px 8px 0;">/100</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="py-5">
+                                            <i class="fas fa-folder-open fa-4x text-light mb-3"></i>
+                                            <p class="text-muted fs-5">No student records found for the selected criteria.</p>
+                                            <p class="text-muted small">Please adjust your filters and try again.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue { background-color: #0b2239; }
+    .btn-dark-blue { background-color: #0b2239; color: white; transition: all 0.2s; }
+    .btn-dark-blue:hover { background-color: #081a2b; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+    .fw-600 { font-weight: 600; }
+    .form-select:focus, .form-control:focus { box-shadow: 0 0 0 0.25rem rgba(11, 34, 57, 0.15); border-color: #0b2239; }
+    .table-hover tbody tr:hover { background-color: rgba(11, 34, 57, 0.02); }
+</style>

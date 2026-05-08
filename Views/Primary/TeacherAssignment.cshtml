@@ -1,0 +1,79 @@
+@{
+    ViewData["Title"] = "Primary - Teacher Assignment";
+}
+
+<div class="card border-0 shadow-sm" style="border-radius: 20px;">
+    <div class="card-header bg-white py-4 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-graduation-cap me-3 text-warning"></i>Teacher Assignment</h4>
+            <p class="mb-0 text-muted small">Assign teachers to primary classes and subjects.</p>
+        </div>
+        <button class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">
+            <i class="fas fa-plus me-2"></i>New Assignment
+        </button>
+    </div>
+    <div class="card-body p-4">
+        <div class="alert alert-info border-0 shadow-sm rounded-4 d-flex align-items-center mb-4">
+            <i class="fas fa-info-circle fa-2x me-3"></i>
+            <div>
+                <strong>Information:</strong> This module allows you to link subject specialists and class teachers to specific sections.
+            </div>
+        </div>
+
+        <div class="table-responsive rounded-3 border">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Teacher Name</th>
+                        <th>Class & Section</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="fw-bold">AJ</span>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Ali Javed</div>
+                                    <div class="text-muted small">ID: T-402</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Class 3 - Section A</td>
+                        <td>Mathematics</td>
+                        <td><span class="badge bg-success rounded-pill">Active</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    <span class="fw-bold">SM</span>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Sara Malik</div>
+                                    <div class="text-muted small">ID: T-405</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Class 2 - Section B</td>
+                        <td>General Science</td>
+                        <td><span class="badge bg-success rounded-pill">Active</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

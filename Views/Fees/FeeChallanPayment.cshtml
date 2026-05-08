@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Fee Challan Payment Report";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row g-4">
+        <div class="col-md-4 col-lg-3">
+            <partial name="_ReportsSidebar" />
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-money-check me-2 text-success"></i>Fee Challan Payment Report</h5>
+                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-print me-1"></i>Print All</button>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4 g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Challan Status</label>
+                            <select class="form-select form-select-sm">
+                                <option>All</option>
+                                <option>Paid</option>
+                                <option>Unpaid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Month</label>
+                            <select class="form-select form-select-sm">
+                                <option>January</option>
+                                <option>February</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary btn-sm w-100">Fetch Data</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light border text-center py-5">
+                        <i class="fas fa-table fa-3x mb-3 opacity-25"></i>
+                        <p class="mb-0">Apply filters to fetch challan payment status data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

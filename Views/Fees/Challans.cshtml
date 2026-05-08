@@ -1,0 +1,349 @@
+@model IEnumerable<StudentManagementSystem.Models.FeeChallan>
+@{
+    ViewData["Title"] = "Quick Challan Print";
+}
+
+<div class="container-fluid mt-2 px-0">
+    <!-- Header -->
+    <div class="challan-gradient-header py-3 px-4 mb-4 d-flex justify-content-between align-items-center shadow-sm">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-print fa-2x text-white me-3"></i>
+            <div>
+                <h4 class="mb-0 text-white fw-bold">Quick Challan Print</h4>
+                <p class="mb-0 text-white-50 small">Search and print challans quickly</p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Create" class="btn btn-outline-light rounded-pill px-4 fw-bold shadow-sm">
+                <i class="fas fa-user-plus me-1"></i> Create Single Challan
+            </a>
+            <a asp-action="Generate" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm">
+                <i class="fas fa-plus-circle me-1"></i> Generate Bulk Challans
+            </a>
+            <div class="bg-white text-dark rounded-pill px-3 py-1 small fw-bold shadow-sm d-flex align-items-center">
+                <i class="fas fa-info-circle me-1"></i> Double-click any row to print challan
+            </div>
+        </div>
+    </div>
+
+    <div class="mx-3">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+                <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Search Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form asp-action="Challans" method="get">
+                    <label class="form-label small text-muted fw-bold mb-2">Search Challans</label>
+                    <div class="row g-3">
+                        <div class="col-lg-9">
+                            <div class="input-group">
+                                <input type="text" name="searchString" class="form-control py-2 border-secondary-subtle" 
+                                       placeholder="Search by Student Name, Student ID, or Challan ID" value="@ViewContext.HttpContext.Request.Query["searchString"]">
+                                <span class="input-group-text bg-white border-secondary-subtle border-start-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                            </div>
+                            <p class="text-muted small mt-2 mb-0">Search by: Student Name, Student ID, or Challan ID</p>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-search-dark w-100 py-2">
+                                <i class="fas fa-search me-2"></i>Search Challans
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="fas fa-list me-2"></i>Challan Results (@Model.Count() total)</h5>
+                <div class="d-flex gap-2">
+                    <button id="btnModify" class="btn btn-light-action btn-sm border"><i class="fas fa-edit me-1"></i>Modify Data</button>
+                    <button id="btnPay" class="btn btn-light-action btn-sm border"><i class="fas fa-money-check-dollar me-1"></i>Pay Selected</button>
+                    <button id="btnUnpaid" class="btn btn-light-action btn-sm border"><i class="fas fa-undo me-1"></i>Mark as Unpaid</button>
+                    <button id="btnDelete" class="btn btn-danger-action btn-sm border"><i class="fas fa-trash me-1"></i>Delete Selected</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light-table">
+                        <tr>
+                            <th class="ps-4"><input type="checkbox" id="selectAll" class="form-check-input"></th>
+                            <th>Challan#</th>
+                            <th>SID</th>
+                            <th>Student Name</th>
+                            <th>Class</th>
+                            <th>Fee Month</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Arrears</th>
+                            <th>Total</th>
+                            <th class="pe-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4"><input type="checkbox" class="form-check-input challan-checkbox" value="@item.ChallanID"></td>
+                                <td class="fw-bold">@item.ChallanID</td>
+                                <td class="text-muted small">@item.StudentID</td>
+                                <td class="fw-bold text-dark">@(item.Student?.Name ?? "Unknown")</td>
+                                <td>@item.ClassName</td>
+                                <td>@item.Month</td>
+                                <td>@item.DueDate.ToShortDateString()</td>
+                                <td>
+                                    @if (item.Status == "Paid")
+                                    {
+                                        <span class="badge bg-success">PAID</span>
+                                    }
+                                    else if (item.Status == "Expired")
+                                    {
+                                        <span class="badge bg-secondary">EXPIRED</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-unpaid">UNPAID</span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-success">@item.Amount.ToString("N2")</td>
+                                <td class="text-danger small">@item.Arrears.ToString("N2")</td>
+                                <td class="fw-bold">@((item.Amount + item.Arrears).ToString("N2"))</td>
+                                <td class="pe-4 text-center">
+                                     <button class="btn btn-arrears btn-sm" onclick="openArrearsModal('@item.ChallanID', @item.Arrears)">
+                                         <i class="fas fa-plus me-1"></i>Add Arrears
+                                     </button>
+                                 </td>
+                            </tr>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="12" class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+                                    <p>No challans found. Click "Generate New Challans" to create some.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .challan-gradient-header {
+        background: linear-gradient(135deg, #009688 0%, #1a237e 100%);
+    }
+    .btn-search-dark {
+        background-color: #1a237e;
+        color: white;
+        font-weight: 600;
+    }
+    .bg-light-table {
+        background-color: #f8f9fa;
+    }
+    .badge-unpaid {
+        background-color: #ffebee;
+        color: #d32f2f;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+    .btn-arrears {
+        background-color: #ffc107;
+        color: #000;
+        border: none;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+    .btn-light-action {
+        background-color: #f5f5f5;
+        color: #616161;
+        font-weight: 600;
+    }
+    .btn-danger-action {
+        background-color: #ffebee;
+        color: #c62828;
+        font-weight: 600;
+    }
+    .table thead th {
+        font-size: 0.85rem;
+        color: #666;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .table tbody td {
+        font-size: 0.9rem;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+</style>
+
+<!-- Add Arrears Modal -->
+<div class="modal fade" id="arrearsModal" tabindex="-1" aria-labelledby="arrearsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning text-dark border-0">
+                <h5 class="modal-title fw-bold" id="arrearsModalLabel"><i class="fas fa-plus-circle me-2"></i>Add Arrears</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="UpdateArrears" method="post">
+                <div class="modal-body p-4">
+                    <input type="hidden" id="modalChallanId" name="challanId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Challan ID</label>
+                        <input type="text" id="displayChallanId" class="form-control bg-light border-0" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Arrears Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-secondary-subtle">Rs.</span>
+                            <input type="number" step="0.01" class="form-control border-secondary-subtle" id="modalArrears" name="arrears" required />
+                        </div>
+                        <div class="form-text">Enter the amount of arrears to be added to this challan.</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold shadow-sm">Save Arrears</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Modify Modal -->
+<div class="modal fade" id="bulkModifyModal" tabindex="-1" aria-labelledby="bulkModifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold" id="bulkModifyModalLabel"><i class="fas fa-edit me-2"></i>Bulk Modify Challans</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="bulkModifyForm" asp-action="BulkModify" method="post">
+                <div class="modal-body p-4">
+                    <div id="selectedChallansCount" class="alert alert-info py-2 small mb-3">
+                        0 challans selected for modification.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">New Month</label>
+                        <input type="text" name="newMonth" class="form-control border-secondary-subtle" placeholder="e.g., Jun-26" />
+                        <div class="form-text">Leave blank to keep original.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">New Due Date</label>
+                        <input type="date" name="newDueDate" class="form-control border-secondary-subtle" />
+                        <div class="form-text">Leave blank to keep original.</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">Apply Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openArrearsModal(challanId, currentArrears) {
+        document.getElementById('modalChallanId').value = challanId;
+        document.getElementById('displayChallanId').value = challanId;
+        document.getElementById('modalArrears').value = currentArrears;
+        
+        var myModal = new bootstrap.Modal(document.getElementById('arrearsModal'));
+        myModal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.challan-checkbox');
+        
+        // Select All functionality
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            });
+        }
+
+        function getSelectedIds() {
+            return Array.from(document.querySelectorAll('.challan-checkbox:checked')).map(cb => cb.value);
+        }
+
+        function performBulkAction(action, confirmMessage) {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                alert('Please select at least one challan.');
+                return;
+            }
+
+            if (confirmMessage && !confirm(confirmMessage)) return;
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Fees/' + action;
+            
+            // Add Anti-Forgery Token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (token) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token.value;
+                form.appendChild(tokenInput);
+            }
+
+            ids.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'challanIds';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        document.getElementById('btnPay')?.addEventListener('click', () => performBulkAction('BulkPay', 'Mark selected challans as PAID?'));
+        document.getElementById('btnUnpaid')?.addEventListener('click', () => performBulkAction('BulkUnpaid', 'Mark selected challans as UNPAID?'));
+        document.getElementById('btnDelete')?.addEventListener('click', () => performBulkAction('BulkDelete', 'Permanently delete selected challans?'));
+
+        document.getElementById('btnModify')?.addEventListener('click', function() {
+            const ids = getSelectedIds();
+            if (ids.length === 0) {
+                alert('Please select at least one challan.');
+                return;
+            }
+            
+            document.getElementById('selectedChallansCount').textContent = `${ids.length} challans selected for modification.`;
+            
+            // Add hidden inputs for IDs to the modify form
+            const form = document.getElementById('bulkModifyForm');
+            // Remove previous hidden ID inputs
+            form.querySelectorAll('input[name="challanIds"]').forEach(el => el.remove());
+            
+            ids.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'challanIds';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            new bootstrap.Modal(document.getElementById('bulkModifyModal')).show();
+        });
+    });
+</script>

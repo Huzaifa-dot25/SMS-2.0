@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - StudentManagementSystem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/StudentManagementSystem.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <a class="sidebar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>SMS Admin</span>
+        </a>
+        <div class="sidebar-nav">
+            @if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Secondary")
+            {
+                <div class="nav-group-title text-info">Assessment</div>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageResult" ? "active" : "")" 
+                   asp-controller="Secondary" asp-action="ManageResult">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Manage Result</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ResultsGrid" ? "active" : "")" 
+                   asp-controller="Secondary" asp-action="ResultsGrid">
+                    <i class="fa-solid fa-table-cells"></i>
+                    <span>Results Grid</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "PrintResult" ? "active" : "")" 
+                   asp-controller="Secondary" asp-action="PrintResult">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print Result</span>
+                </a>
+                @if (ViewContext.RouteData.Values["Action"]?.ToString() == "PrintResult")
+                {
+                    var currentType = Context.Request.Query["type"].ToString();
+                    <a class="sidebar-sublink @(currentType == "EndOfYear" || currentType == "" ? "active" : "")"
+                       asp-controller="Secondary" asp-action="PrintResult" asp-route-type="EndOfYear">
+                        <i class="fa-solid fa-circle-dot me-1"></i> End of Year Result
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "Monthly" ? "active" : "")"
+                       asp-controller="Secondary" asp-action="PrintResult" asp-route-type="Monthly">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Monthly Result
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "MarksSheet" ? "active" : "")"
+                       asp-controller="Secondary" asp-action="PrintResult" asp-route-type="MarksSheet">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Marks Sheet
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "CommentsSheet" ? "active" : "")"
+                       asp-controller="Secondary" asp-action="PrintResult" asp-route-type="CommentsSheet">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Comments Sheet
+                    </a>
+                }
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "StudentDetailReport" ? "active" : "")" 
+                   asp-controller="Secondary" asp-action="StudentDetailReport">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Detail Report</span>
+                </a>
+                <hr class="mx-3 opacity-25" />
+                <a class="sidebar-link text-warning" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back Main Menu</span>
+                </a>
+            }
+            else if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Primary")
+            {
+                <div class="nav-group-title text-warning" style="font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,0,0.2); padding-bottom: 10px; margin-bottom: 10px;">Assessment</div>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageResult" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="ManageResult">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Primary - Manage Result</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ResultsGrid" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="ResultsGrid">
+                    <i class="fa-solid fa-table-cells"></i>
+                    <span>Results Grid</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "PrintResult" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="PrintResult">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print Result</span>
+                </a>
+                @if (ViewContext.RouteData.Values["Action"]?.ToString() == "PrintResult")
+                {
+                    var currentType = Context.Request.Query["type"].ToString();
+                    <a class="sidebar-sublink @(currentType == "EndOfYear" || currentType == "" ? "active" : "")"
+                       asp-controller="Primary" asp-action="PrintResult" asp-route-type="EndOfYear">
+                        <i class="fa-solid fa-circle-dot me-1"></i> End of Year Result
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "Monthly" ? "active" : "")"
+                       asp-controller="Primary" asp-action="PrintResult" asp-route-type="Monthly">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Monthly Result
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "MarksSheet" ? "active" : "")"
+                       asp-controller="Primary" asp-action="PrintResult" asp-route-type="MarksSheet">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Marks Sheet
+                    </a>
+                    <a class="sidebar-sublink @(currentType == "CommentsSheet" ? "active" : "")"
+                       asp-controller="Primary" asp-action="PrintResult" asp-route-type="CommentsSheet">
+                        <i class="fa-solid fa-circle-dot me-1"></i> Comments Sheet
+                    </a>
+                }
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "TeacherAssignment" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="TeacherAssignment">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Teacher Assignment</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageStatements" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="ManageStatements">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    <span>Manage Statements</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "ViewStatementsByClass" ? "active" : "")" 
+                   asp-controller="Primary" asp-action="ViewStatementsByClass">
+                    <i class="fa-solid fa-users-rectangle"></i>
+                    <span>View Statements by Class</span>
+                </a>
+                <hr class="mx-3 opacity-25" />
+                <a class="sidebar-link text-warning" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back Main Menu</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-group-title">Main Menu</div>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" 
+                   asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Students" ? "active" : "")" 
+                   asp-area="" asp-controller="Students" asp-action="Index">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Class" ? "active" : "")" 
+                   asp-area="" asp-controller="Class" asp-action="Index">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Students by Class</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Fees" ? "active" : "")" 
+                   asp-area="" asp-controller="Fees" asp-action="Index">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <span>Fees</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Secondary" ? "active" : "")" 
+                   asp-area="" asp-controller="Secondary" asp-action="Index">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <span>Secondary</span>
+                </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Primary" ? "active" : "")" 
+                   asp-area="" asp-controller="Primary" asp-action="Index">
+                    <i class="fa-solid fa-star"></i>
+                    <span>Primary</span>
+                </a>
+            }
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <button class="btn d-lg-none px-0 me-3" type="button" id="sidebarToggle">
+                <i class="fa-solid fa-bars fs-4"></i>
+            </button>
+            <div class="d-flex align-items-center">
+                <h4 class="mb-0 fw-600">@ViewData["Title"]</h4>
+            </div>
+            <div class="ms-auto d-flex align-items-center">
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark text-decoration-none dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-circle-user fs-4 me-1"></i>
+                        <span class="d-none d-sm-inline">Admin User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-gear me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main role="main" class="content-body">
+            @RenderBody()
+        </main>
+
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

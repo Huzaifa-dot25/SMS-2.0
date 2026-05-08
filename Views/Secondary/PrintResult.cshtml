@@ -1,0 +1,140 @@
+@{
+    ViewData["Title"] = "Print Result";
+    var type        = ViewBag.Type as string ?? "EndOfYear";
+    var sessions    = ViewBag.Sessions as List<string> ?? new List<string>();
+    var classes     = ViewBag.Classes  as List<string> ?? new List<string>();
+    var sections    = ViewBag.Sections as List<string> ?? new List<string>();
+    var terms       = ViewBag.Terms    as List<string> ?? new List<string>();
+
+    var titles = new Dictionary<string, (string Icon, string Label, string Desc)>
+    {
+        ["EndOfYear"]     = ("fa-trophy",       "End of Year Result",  "Generate and print annual result cards for all students."),
+        ["Monthly"]       = ("fa-calendar-day", "Monthly Result",      "Print monthly assessment results by class and section."),
+        ["MarksSheet"]    = ("fa-table-list",   "Marks Sheet",         "Print a consolidated marks sheet for the selected class."),
+        ["CommentsSheet"] = ("fa-comment-dots", "Comments Sheet",      "Print teacher comments and remarks for each student."),
+    };
+
+    var (icon, label, desc) = titles.ContainsKey(type) ? titles[type] : titles["EndOfYear"];
+}
+
+<div class="card border-0 shadow-sm">
+    <!-- Header -->
+    <div class="card-header bg-info text-white py-3 d-flex align-items-center gap-3">
+        <i class="fas @icon fs-4"></i>
+        <div>
+            <h5 class="mb-0 fw-bold">@label</h5>
+            <small class="opacity-75">@desc</small>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <!-- Filter Form -->
+        <form asp-action="PrintResult" method="get" class="mb-4">
+            <input type="hidden" name="type" value="@type" />
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Session</label>
+                    <select name="session" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- Select Session --</option>
+                        @foreach (var s in sessions)
+                        {
+                            <option value="@s" selected="@(Context.Request.Query["session"].ToString() == s)">@s</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Class</label>
+                    <select name="className" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- Select Class --</option>
+                        @foreach (var c in classes)
+                        {
+                            <option value="@c" selected="@(Context.Request.Query["className"].ToString() == c)">@c</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-bold">Section</label>
+                    <select name="section" class="form-select bg-light border-0 shadow-sm">
+                        <option value="">-- All --</option>
+                        @foreach (var s in sections)
+                        {
+                            <option value="@s" selected="@(Context.Request.Query["section"].ToString() == s)">@s</option>
+                        }
+                    </select>
+                </div>
+                @if (type != "EndOfYear")
+                {
+                    <div class="col-md-2">
+                        <label class="form-label small fw-bold">Term</label>
+                        <select name="term" class="form-select bg-light border-0 shadow-sm">
+                            <option value="">-- All Terms --</option>
+                            @foreach (var t in terms)
+                            {
+                                <option value="@t" selected="@(Context.Request.Query["term"].ToString() == t)">@t</option>
+                            }
+                        </select>
+                    </div>
+                }
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-info text-white w-100 shadow-sm">
+                        <i class="fas fa-search me-1"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Type-specific content panel -->
+        @if (type == "EndOfYear")
+        {
+            <div class="alert alert-info border-0 d-flex align-items-center gap-3">
+                <i class="fas fa-trophy fs-4"></i>
+                <div>
+                    <strong>End of Year Result Cards</strong> — Select a session and class above, then click Search to load annual result cards for printing.
+                </div>
+            </div>
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-trophy fa-4x mb-3 opacity-25"></i>
+                <p class="fs-5">Select session and class to generate End of Year result cards.</p>
+            </div>
+        }
+        else if (type == "Monthly")
+        {
+            <div class="alert alert-info border-0 d-flex align-items-center gap-3">
+                <i class="fas fa-calendar-day fs-4"></i>
+                <div>
+                    <strong>Monthly Result</strong> — Select session, class and term to print monthly assessment results.
+                </div>
+            </div>
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-calendar-day fa-4x mb-3 opacity-25"></i>
+                <p class="fs-5">Select filters to generate Monthly result cards.</p>
+            </div>
+        }
+        else if (type == "MarksSheet")
+        {
+            <div class="alert alert-info border-0 d-flex align-items-center gap-3">
+                <i class="fas fa-table-list fs-4"></i>
+                <div>
+                    <strong>Marks Sheet</strong> — Prints a consolidated subject-wise marks sheet for the selected class and term.
+                </div>
+            </div>
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-table-list fa-4x mb-3 opacity-25"></i>
+                <p class="fs-5">Select filters to generate the Marks Sheet.</p>
+            </div>
+        }
+        else if (type == "CommentsSheet")
+        {
+            <div class="alert alert-info border-0 d-flex align-items-center gap-3">
+                <i class="fas fa-comment-dots fs-4"></i>
+                <div>
+                    <strong>Comments Sheet</strong> — Prints teacher remarks and comments for each student in the selected class.
+                </div>
+            </div>
+            <div class="text-center py-5 text-muted">
+                <i class="fas fa-comment-dots fa-4x mb-3 opacity-25"></i>
+                <p class="fs-5">Select filters to generate the Comments Sheet.</p>
+            </div>
+        }
+    </div>
+</div>
