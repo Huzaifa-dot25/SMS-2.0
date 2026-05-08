@@ -37,12 +37,12 @@ namespace StudentManagementSystem.Controllers
 
                     if (existing != null)
                     {
-                        existing.ObtainedMarks    = result.ObtainedMarks;
-                        existing.Status           = result.Status;
-                        existing.ExamDate         = result.ExamDate;
-                        existing.DeclarationDate  = result.DeclarationDate;
-                        existing.TotalMarks       = result.TotalMarks;
-                        existing.IsAnnounced      = result.IsAnnounced;
+                        existing.ObtainedMarks   = result.ObtainedMarks;
+                        existing.Status          = result.Status;
+                        existing.ExamDate        = result.ExamDate;
+                        existing.DeclarationDate = result.DeclarationDate;
+                        existing.TotalMarks      = result.TotalMarks;
+                        existing.IsAnnounced     = result.IsAnnounced;
                     }
                     else
                     {
@@ -188,8 +188,8 @@ namespace StudentManagementSystem.Controllers
             return View(vm);
         }
 
-        public IActionResult AwardList()    => View();
+        public IActionResult AwardList()      => View();
         public IActionResult ProgressReport() => View();
-        public IActionResult DateSheet()    => View();
+        public IActionResult DateSheet()      => View();
     }
 }

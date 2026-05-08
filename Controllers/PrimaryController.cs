@@ -106,9 +106,9 @@ namespace StudentManagementSystem.Controllers
             return View();
         }
 
-        public IActionResult TeacherAssignment()      => View();
-        public IActionResult ManageStatements()        => View();
-        public IActionResult ViewStatementsByClass()   => View();
+        public IActionResult TeacherAssignment()    => View();
+        public IActionResult ManageStatements()      => View();
+        public IActionResult ViewStatementsByClass() => View();
 
         [HttpPost]
         public async Task<IActionResult> SaveResults(List<StudentResult> results)

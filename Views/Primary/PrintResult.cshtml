@@ -1,10 +1,10 @@
 @{
-    ViewData["Title"] = "Print Result";
-    var type        = ViewBag.Type as string ?? "EndOfYear";
-    var sessions    = ViewBag.Sessions as List<string> ?? new List<string>();
-    var classes     = ViewBag.Classes  as List<string> ?? new List<string>();
-    var sections    = ViewBag.Sections as List<string> ?? new List<string>();
-    var terms       = ViewBag.Terms    as List<string> ?? new List<string>();
+    ViewData["Title"] = "Primary - Print Result";
+    var type     = ViewBag.Type as string ?? "EndOfYear";
+    var sessions = ViewBag.Sessions as List<string> ?? new List<string>();
+    var classes  = ViewBag.Classes as List<string> ?? new List<string>();
+    var sections = ViewBag.Sections as List<string> ?? new List<string>();
+    var terms    = ViewBag.Terms as List<string> ?? new List<string>();
 
     var titles = new Dictionary<string, (string Icon, string Label, string Desc)>
     {

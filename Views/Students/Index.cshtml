@@ -15,7 +15,6 @@
         </a>
     </div>
 
-    <!-- Search Section -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-4">
             <form asp-action="Index" method="get" class="row g-3">
@@ -24,7 +23,7 @@
                         <span class="input-group-text bg-white border-end-0">
                             <i class="fas fa-search text-muted"></i>
                         </span>
-                        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" 
+                        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
                                class="form-control border-start-0" placeholder="Search by name or registration number..." />
                         <button type="submit" class="btn btn-primary px-4">Search</button>
                     </div>
@@ -58,36 +57,29 @@
                     <tbody>
                         @if (Model.Any())
                         {
-                            @foreach (var item in Model) {
+                            @foreach (var item in Model)
+                            {
                                 <tr class="align-middle">
                                     <td class="ps-4">
                                         @if (!string.IsNullOrEmpty(item.PhotoPath))
                                         {
-                                            <img src="@item.PhotoPath" alt="Photo" class="rounded-circle shadow-sm" style="width: 45px; height: 45px; object-fit: cover;" />
+                                            <img src="@item.PhotoPath" alt="Photo" class="rounded-circle shadow-sm" style="width:45px;height:45px;object-fit:cover;" />
                                         }
                                         else
                                         {
-                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style="width: 45px; height: 45px;">
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style="width:45px;height:45px;">
                                                 <i class="fas fa-user"></i>
                                             </div>
                                         }
                                     </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark border fw-500">
-                                            @(item.Admission?.RollNo ?? "N/A")
-                                        </span>
-                                    </td>
+                                    <td><span class="badge bg-light text-dark border fw-500">@(item.Admission?.RollNo ?? "N/A")</span></td>
                                     <td>
                                         <a asp-action="Details" asp-route-id="@item.StudentID" class="text-decoration-none text-dark fw-bold hover-primary">
                                             @item.Name
                                         </a>
                                     </td>
-                                    <td>
-                                        <span class="text-muted">@item.Gender</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-muted">@item.DateOfBirth.ToShortDateString()</span>
-                                    </td>
+                                    <td><span class="text-muted">@item.Gender</span></td>
+                                    <td><span class="text-muted">@item.DateOfBirth.ToShortDateString()</span></td>
                                     <td class="text-end pe-4">
                                         <div class="btn-group shadow-sm">
                                             <a asp-controller="Fees" asp-action="Create" asp-route-studentId="@item.StudentID" class="btn btn-sm btn-white border" title="Create Fee Challan">
@@ -132,4 +124,3 @@
     .btn-white { background: #fff; color: #333; }
     .btn-white:hover { background: #f8f9fa; }
 </style>
-
