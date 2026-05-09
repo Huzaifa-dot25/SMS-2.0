@@ -141,6 +141,11 @@
                     <i class="fa-solid fa-users"></i>
                     <span>Students</span>
                 </a>
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Employee" ? "active" : "")"
+                   asp-area="" asp-controller="Employee" asp-action="Index">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span>Employees</span>
+                </a>
                 <a class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Class" ? "active" : "")"
                    asp-area="" asp-controller="Class" asp-action="Index">
                     <i class="fa-solid fa-chalkboard-user"></i>

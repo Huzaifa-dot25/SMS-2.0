@@ -22,6 +22,8 @@ namespace StudentManagementSystem.Data
         public DbSet<FeeSchedule> FeeSchedules { get; set; }
         public DbSet<FeeScheduleItem> FeeScheduleItems { get; set; }
         public DbSet<StudentResult> StudentResults { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +71,18 @@ namespace StudentManagementSystem.Data
                 .HasOne(i => i.FeeSchedule)
                 .WithMany(s => s.Items)
                 .HasForeignKey(i => i.FeeScheduleId);
+
+            // Employee relationships
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Manager)
+                .WithMany(e => e.Subordinates)
+                .HasForeignKey(e => e.ManagerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EmployeeDocument>()
+                .HasOne(d => d.Employee)
+                .WithMany(e => e.Documents)
+                .HasForeignKey(d => d.EmployeeID);
         }
     }
 }
