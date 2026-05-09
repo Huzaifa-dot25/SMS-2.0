@@ -114,5 +114,74 @@ namespace StudentManagementSystem.Controllers
 
             return RedirectToAction("Index", "Students");
         }
+
+        public async Task<IActionResult> SeedResults()
+        {
+            int totalResultsAdded = 0;
+            string[] subjects = { "English", "Mathematics", "Science", "Social Studies", "Urdu", "Islamic Studies", "Computer" };
+            string[] terms = { "Term 1", "Term 2", "Term 3" };
+            string session = "2024-2025";
+
+            Random rnd = new Random();
+
+            // Get all students with their admission info
+            var students = await _context.Students
+                .Include(s => s.Admission)
+                .Where(s => s.Admission != null)
+                .ToListAsync();
+
+            foreach (var student in students)
+            {
+                var admission = student.Admission;
+                if (admission == null) continue;
+
+                // Check if results already exist for this student
+                var existingResults = await _context.StudentResults
+                    .Where(r => r.StudentID == student.StudentID && r.Session == session)
+                    .CountAsync();
+
+                if (existingResults > 0) continue; // Skip if results already exist
+
+                // Create results for each term and subject
+                foreach (var term in terms)
+                {
+                    foreach (var subject in subjects)
+                    {
+                        var result = new StudentResult
+                        {
+                            StudentID = student.StudentID,
+                            Session = session,
+                            Class = admission.Class,
+                            Section = admission.Section,
+                            Term = term,
+                            ExamType = "Mid Term",
+                            Subject = subject,
+                            SubSubject = "",
+                            ExamDate = DateTime.Today.AddDays(-rnd.Next(1, 30)),
+                            DeclarationDate = DateTime.Today.AddDays(-rnd.Next(1, 15)),
+                            TotalMarks = 100,
+                            ObtainedMarks = (decimal)rnd.Next(40, 100),
+                            Status = "Present",
+                            IsAnnounced = true
+                        };
+
+                        _context.StudentResults.Add(result);
+                        totalResultsAdded++;
+                    }
+                }
+            }
+
+            if (totalResultsAdded > 0)
+            {
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"Successfully added {totalResultsAdded} result records for {students.Count} students.";
+            }
+            else
+            {
+                TempData["Info"] = "Results already exist for all students.";
+            }
+
+            return RedirectToAction("ResultsGrid", "Secondary");
+        }
     }
 }

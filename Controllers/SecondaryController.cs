@@ -76,10 +76,16 @@ namespace StudentManagementSystem.Controllers
 
         public async Task<IActionResult> ResultsGrid(string? session, string? className, string? section, string? term)
         {
-            ViewBag.Sessions = await _context.StudentResults.Select(r => r.Session).Distinct().OrderByDescending(s => s).ToListAsync();
-            ViewBag.Classes  = await _context.Admissions.Where(a => !string.IsNullOrEmpty(a.Class)).Select(a => a.Class!).Distinct().OrderBy(c => c).ToListAsync();
-            ViewBag.Sections = await _context.Admissions.Where(a => !string.IsNullOrEmpty(a.Section)).Select(a => a.Section!).Distinct().OrderBy(s => s).ToListAsync();
-            ViewBag.Terms    = await _context.StudentResults.Select(r => r.Term).Distinct().OrderBy(t => t).ToListAsync();
+            // Get all available filter options from StudentResults table
+            var allResults = await _context.StudentResults
+                .Include(r => r.Student).ThenInclude(s => s!.Admission)
+                .Include(r => r.Student).ThenInclude(s => s!.Parent)
+                .ToListAsync();
+
+            ViewBag.Sessions = allResults.Select(r => r.Session).Distinct().OrderByDescending(s => s).ToList();
+            ViewBag.Classes  = allResults.Select(r => r.Class).Distinct().OrderBy(c => c).ToList();
+            ViewBag.Sections = allResults.Select(r => r.Section).Distinct().OrderBy(s => s).ToList();
+            ViewBag.Terms    = allResults.Select(r => r.Term).Distinct().OrderBy(t => t).ToList();
 
             var vm = new ResultsGridViewModel
             {
@@ -94,15 +100,13 @@ namespace StudentManagementSystem.Controllers
 
             if (anyFilter)
             {
-                var results = await _context.StudentResults
-                    .Include(r => r.Student).ThenInclude(s => s!.Admission)
-                    .Include(r => r.Student).ThenInclude(s => s!.Parent)
+                var results = allResults
                     .Where(r =>
                         (string.IsNullOrEmpty(session)   || r.Session == session)   &&
                         (string.IsNullOrEmpty(className) || r.Class   == className) &&
                         (string.IsNullOrEmpty(section)   || r.Section == section)   &&
                         (string.IsNullOrEmpty(term)      || r.Term    == term))
-                    .ToListAsync();
+                    .ToList();
 
                 vm.ReportCards = results
                     .GroupBy(r => r.StudentID)
