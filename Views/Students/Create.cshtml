@@ -125,6 +125,34 @@
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
+                                <label class="form-label fw-bold text-primary">Class<span class="required-star">*</span></label>
+                                <select asp-for="Admission.Class" class="form-select border-primary">
+                                    <option value="">-- Select Class --</option>
+                                    @if (ViewBag.Classes != null)
+                                    {
+                                        @foreach (var c in ViewBag.Classes)
+                                        {
+                                            <option value="@c">@c</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-primary">Section<span class="required-star">*</span></label>
+                                <select asp-for="Admission.Section" class="form-select border-primary">
+                                    <option value="">-- Select Section --</option>
+                                    @if (ViewBag.Sections != null)
+                                    {
+                                        @foreach (var s in ViewBag.Sections)
+                                        {
+                                            <option value="@s">@s</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="col-md-3">
                                 <label asp-for="RegistrationDate" class="form-label">Registration Date<span class="required-star">^</span></label>
                                 <input asp-for="RegistrationDate" class="form-control" type="date" />
                                 <span asp-validation-for="RegistrationDate" class="text-danger small"></span>
@@ -133,8 +161,6 @@
                                 <label asp-for="MobileNo" class="form-label">Mobile No</label>
                                 <input asp-for="MobileNo" class="form-control" />
                             </div>
-
-                            <!-- Row 2 -->
                             <div class="col-md-3">
                                 <label asp-for="Email" class="form-label">Email</label>
                                 <input asp-for="Email" class="form-control" />
@@ -144,6 +170,8 @@
                                 <input asp-for="DateOfBirth" class="form-control" type="date" />
                                 <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                             </div>
+
+                            <!-- Row 3 -->
                             <div class="col-md-3">
                                 <label asp-for="LandLine" class="form-label">Land Line</label>
                                 <input asp-for="LandLine" class="form-control" />
@@ -158,7 +186,7 @@
                                 <span asp-validation-for="Gender" class="text-danger small"></span>
                             </div>
 
-                            <!-- Row 3 -->
+                            <!-- Row 4 -->
                             <div class="col-md-3">
                                 <label asp-for="InternationalLocal" class="form-label">International/Local</label>
                                 <select asp-for="InternationalLocal" class="form-select">

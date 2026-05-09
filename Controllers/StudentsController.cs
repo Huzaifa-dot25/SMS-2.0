@@ -18,27 +18,29 @@ namespace StudentManagementSystem.Controllers
 
         private async Task PopulateClassDropdowns()
         {
-            ViewBag.Classes = await _context.Admissions
+            var classes = await _context.Admissions
                 .Where(a => !string.IsNullOrEmpty(a.Class))
-                .Select(a => a.Class)
+                .Select(a => a.Class!)
                 .Distinct()
+                .OrderBy(c => c)
                 .ToListAsync();
 
-            if (ViewBag.Classes.Count == 0)
-            {
-                ViewBag.Classes = new List<string> { "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10" };
-            }
+            if (!classes.Any())
+                classes = new List<string> { "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10" };
 
-            ViewBag.Sections = await _context.Admissions
+            ViewBag.Classes = classes;
+
+            var sections = await _context.Admissions
                 .Where(a => !string.IsNullOrEmpty(a.Section))
-                .Select(a => a.Section)
+                .Select(a => a.Section!)
                 .Distinct()
+                .OrderBy(s => s)
                 .ToListAsync();
 
-            if (ViewBag.Sections.Count == 0)
-            {
-                ViewBag.Sections = new List<string> { "A", "B", "C", "D" };
-            }
+            if (!sections.Any())
+                sections = new List<string> { "A", "B", "C", "D" };
+
+            ViewBag.Sections = sections;
         }
 
         // GET: Students

@@ -76,16 +76,31 @@ namespace StudentManagementSystem.Controllers
 
         public async Task<IActionResult> ResultsGrid(string? session, string? className, string? section, string? term)
         {
-            // Get all available filter options from StudentResults table
+            // Always load all results with navigation properties
             var allResults = await _context.StudentResults
                 .Include(r => r.Student).ThenInclude(s => s!.Admission)
                 .Include(r => r.Student).ThenInclude(s => s!.Parent)
                 .ToListAsync();
 
-            ViewBag.Sessions = allResults.Select(r => r.Session).Distinct().OrderByDescending(s => s).ToList();
-            ViewBag.Classes  = allResults.Select(r => r.Class).Distinct().OrderBy(c => c).ToList();
-            ViewBag.Sections = allResults.Select(r => r.Section).Distinct().OrderBy(s => s).ToList();
-            ViewBag.Terms    = allResults.Select(r => r.Term).Distinct().OrderBy(t => t).ToList();
+            // Fall back to Admissions table for dropdowns if no results exist yet
+            var sessionList  = allResults.Select(r => r.Session).Distinct().OrderByDescending(s => s).ToList();
+            var classList    = allResults.Select(r => r.Class).Distinct().OrderBy(c => c).ToList();
+            var sectionList  = allResults.Select(r => r.Section).Distinct().OrderBy(s => s).ToList();
+            var termList     = allResults.Select(r => r.Term).Distinct().OrderBy(t => t).ToList();
+
+            if (!sessionList.Any())
+                sessionList = await _context.Admissions.Where(a => !string.IsNullOrEmpty(a.Session)).Select(a => a.Session!).Distinct().OrderByDescending(s => s).ToListAsync();
+            if (!classList.Any())
+                classList = await _context.Admissions.Where(a => !string.IsNullOrEmpty(a.Class)).Select(a => a.Class!).Distinct().OrderBy(c => c).ToListAsync();
+            if (!sectionList.Any())
+                sectionList = await _context.Admissions.Where(a => !string.IsNullOrEmpty(a.Section)).Select(a => a.Section!).Distinct().OrderBy(s => s).ToListAsync();
+            if (!termList.Any())
+                termList = new List<string> { "Term 1", "Term 2", "Term 3" };
+
+            ViewBag.Sessions = sessionList;
+            ViewBag.Classes  = classList;
+            ViewBag.Sections = sectionList;
+            ViewBag.Terms    = termList;
 
             var vm = new ResultsGridViewModel
             {
