@@ -123,8 +123,362 @@ namespace StudentManagementSystem.Controllers
             return View();
         }
 
-        public IActionResult TeacherAssignment()    => View();
-        public IActionResult ManageStatements()      => View();
+        // GET: TeacherAssignment
+        public async Task<IActionResult> TeacherAssignment(string? searchString)
+        {
+            ViewData["CurrentFilter"] = searchString;
+
+            var assignments = _context.TeacherAssignments.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                assignments = assignments.Where(t => t.TeacherName.Contains(searchString) 
+                                                  || t.TeacherID.Contains(searchString)
+                                                  || t.Class.Contains(searchString)
+                                                  || t.Section.Contains(searchString)
+                                                  || t.Subject.Contains(searchString));
+            }
+
+            assignments = assignments.OrderBy(t => t.Class).ThenBy(t => t.Section).ThenBy(t => t.Subject);
+
+            return View(await assignments.ToListAsync());
+        }
+
+        // GET: TeacherAssignment/Details/5
+        public async Task<IActionResult> TeacherAssignmentDetails(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var assignment = await _context.TeacherAssignments
+                .FirstOrDefaultAsync(m => m.AssignmentID == id);
+
+            if (assignment == null) return NotFound();
+
+            return View(assignment);
+        }
+
+        // GET: TeacherAssignment/Create
+        public async Task<IActionResult> TeacherAssignmentCreate()
+        {
+            await PopulateDropdowns();
+            return View();
+        }
+
+        // POST: TeacherAssignment/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeacherAssignmentCreate(TeacherAssignment assignment)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(assignment);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Teacher assignment created successfully!";
+                return RedirectToAction(nameof(TeacherAssignment));
+            }
+            await PopulateDropdowns();
+            return View(assignment);
+        }
+
+        // GET: TeacherAssignment/Edit/5
+        public async Task<IActionResult> TeacherAssignmentEdit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            await PopulateDropdowns();
+            var assignment = await _context.TeacherAssignments.FindAsync(id);
+            if (assignment == null) return NotFound();
+
+            return View(assignment);
+        }
+
+        // POST: TeacherAssignment/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeacherAssignmentEdit(int id, TeacherAssignment assignment)
+        {
+            if (id != assignment.AssignmentID) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    assignment.ModifiedDate = DateTime.Now;
+                    _context.Update(assignment);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Teacher assignment updated successfully!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TeacherAssignmentExists(assignment.AssignmentID)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(TeacherAssignment));
+            }
+            await PopulateDropdowns();
+            return View(assignment);
+        }
+
+        // GET: TeacherAssignment/Delete/5
+        public async Task<IActionResult> TeacherAssignmentDelete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var assignment = await _context.TeacherAssignments
+                .FirstOrDefaultAsync(m => m.AssignmentID == id);
+            if (assignment == null) return NotFound();
+
+            return View(assignment);
+        }
+
+        // POST: TeacherAssignment/Delete/5
+        [HttpPost, ActionName("TeacherAssignmentDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeacherAssignmentDeleteConfirmed(int id)
+        {
+            var assignment = await _context.TeacherAssignments.FindAsync(id);
+            if (assignment != null)
+            {
+                _context.TeacherAssignments.Remove(assignment);
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Teacher assignment deleted successfully!";
+            return RedirectToAction(nameof(TeacherAssignment));
+        }
+
+        private bool TeacherAssignmentExists(int id)
+        {
+            return _context.TeacherAssignments.Any(e => e.AssignmentID == id);
+        }
+
+        private async Task PopulateDropdowns()
+        {
+            // Classes
+            var classes = await _context.Admissions
+                .Where(a => !string.IsNullOrEmpty(a.Class))
+                .Select(a => a.Class!)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+
+            if (!classes.Any())
+                classes = new List<string> { "Class 1", "Class 2", "Class 3", "Class 4", "Class 5" };
+
+            ViewBag.Classes = classes;
+
+            // Sections
+            var sections = await _context.Admissions
+                .Where(a => !string.IsNullOrEmpty(a.Section))
+                .Select(a => a.Section!)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToListAsync();
+
+            if (!sections.Any())
+                sections = new List<string> { "A", "B", "C", "D" };
+
+            ViewBag.Sections = sections;
+
+            // Subjects (Primary level subjects)
+            ViewBag.Subjects = new List<string> 
+            { 
+                "English", "Mathematics", "General Science", "Social Studies", 
+                "Urdu", "Islamic Studies", "Computer Studies", "Art & Craft",
+                "Physical Education", "Music", "Library"
+            };
+
+            // Assignment Types
+            ViewBag.AssignmentTypes = new List<string> { "Class Teacher", "Subject Teacher" };
+
+            // Status
+            ViewBag.Statuses = new List<string> { "Active", "Inactive" };
+
+            // Academic Years
+            ViewBag.AcademicYears = new List<string> 
+            { 
+                "2024-2025", "2025-2026", "2026-2027", "2027-2028" 
+            };
+        }
+        // GET: ManageStatements
+        public async Task<IActionResult> ManageStatements(string? searchString)
+        {
+            ViewData["CurrentFilter"] = searchString;
+
+            var statements = _context.Statements.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                statements = statements.Where(s => s.StatementText.Contains(searchString) 
+                                                  || s.Category.Contains(searchString)
+                                                  || s.Subcategory != null && s.Subcategory.Contains(searchString));
+            }
+
+            statements = statements.OrderBy(s => s.Category).ThenBy(s => s.StatementType);
+
+            return View(await statements.ToListAsync());
+        }
+
+        // GET: ManageStatements/Details/5
+        public async Task<IActionResult> StatementDetails(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var statement = await _context.Statements
+                .FirstOrDefaultAsync(m => m.StatementID == id);
+
+            if (statement == null) return NotFound();
+
+            return View(statement);
+        }
+
+        // GET: ManageStatements/Create
+        public async Task<IActionResult> StatementCreate()
+        {
+            await PopulateStatementDropdowns();
+            return View();
+        }
+
+        // POST: ManageStatements/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StatementCreate(Statement statement)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(statement);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Statement created successfully!";
+                return RedirectToAction(nameof(ManageStatements));
+            }
+            await PopulateStatementDropdowns();
+            return View(statement);
+        }
+
+        // GET: ManageStatements/Edit/5
+        public async Task<IActionResult> StatementEdit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            await PopulateStatementDropdowns();
+            var statement = await _context.Statements.FindAsync(id);
+            if (statement == null) return NotFound();
+
+            return View(statement);
+        }
+
+        // POST: ManageStatements/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StatementEdit(int id, Statement statement)
+        {
+            if (id != statement.StatementID) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    statement.ModifiedDate = DateTime.Now;
+                    _context.Update(statement);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Statement updated successfully!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StatementExists(statement.StatementID)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(ManageStatements));
+            }
+            await PopulateStatementDropdowns();
+            return View(statement);
+        }
+
+        // GET: ManageStatements/Delete/5
+        public async Task<IActionResult> StatementDelete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var statement = await _context.Statements
+                .FirstOrDefaultAsync(m => m.StatementID == id);
+            if (statement == null) return NotFound();
+
+            return View(statement);
+        }
+
+        // POST: ManageStatements/Delete/5
+        [HttpPost, ActionName("StatementDelete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StatementDeleteConfirmed(int id)
+        {
+            var statement = await _context.Statements.FindAsync(id);
+            if (statement != null)
+            {
+                _context.Statements.Remove(statement);
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Statement deleted successfully!";
+            return RedirectToAction(nameof(ManageStatements));
+        }
+
+        private bool StatementExists(int id)
+        {
+            return _context.Statements.Any(e => e.StatementID == id);
+        }
+
+        private async Task PopulateStatementDropdowns()
+        {
+            // Categories
+            ViewBag.Categories = new List<string> 
+            { 
+                "Academic Performance", "Behavioral Conduct", "Extracurricular", 
+                "Attendance", "Homework", "Participation", "Social Skills"
+            };
+
+            // Subcategories
+            ViewBag.Subcategories = new List<string> 
+            { 
+                "Mathematics", "English", "Science", "Social Studies", "Art", "Music", "Physical Education",
+                "Leadership", "Teamwork", "Responsibility", "Creativity", "Problem Solving"
+            };
+
+            // Statement Types
+            ViewBag.StatementTypes = new List<string> { "Positive", "Needs Improvement", "Concern" };
+
+            // Classes
+            var classes = await _context.Admissions
+                .Where(a => !string.IsNullOrEmpty(a.Class))
+                .Select(a => a.Class!)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
+
+            if (!classes.Any())
+                classes = new List<string> { "Class 1", "Class 2", "Class 3", "Class 4", "Class 5" };
+
+            ViewBag.Classes = classes;
+
+            // Sections
+            var sections = await _context.Admissions
+                .Where(a => !string.IsNullOrEmpty(a.Section))
+                .Select(a => a.Section!)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToListAsync();
+
+            if (!sections.Any())
+                sections = new List<string> { "A", "B", "C", "D" };
+
+            ViewBag.Sections = sections;
+
+            // Subjects
+            ViewBag.Subjects = new List<string> 
+            { 
+                "English", "Mathematics", "General Science", "Social Studies", 
+                "Urdu", "Islamic Studies", "Computer Studies", "Art & Craft"
+            };
+        }
         public IActionResult ViewStatementsByClass() => View();
 
         [HttpPost]

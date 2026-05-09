@@ -1,3 +1,5 @@
+@model IEnumerable<StudentManagementSystem.Models.TeacherAssignment>
+
 @{
     ViewData["Title"] = "Primary - Teacher Assignment";
 }
@@ -8,15 +10,51 @@
             <h4 class="mb-1 fw-bold text-dark"><i class="fas fa-graduation-cap me-3 text-warning"></i>Teacher Assignment</h4>
             <p class="mb-0 text-muted small">Assign teachers to primary classes and subjects.</p>
         </div>
-        <button class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">
+        <a asp-action="TeacherAssignmentCreate" class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold">
             <i class="fas fa-plus me-2"></i>New Assignment
-        </button>
+        </a>
     </div>
     <div class="card-body p-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success border-0 shadow-sm rounded-4 d-flex align-items-center mb-4">
+                <i class="fas fa-check-circle fa-2x me-3"></i>
+                <div>
+                    <strong>Success:</strong> @TempData["SuccessMessage"]
+                </div>
+            </div>
+        }
+
         <div class="alert alert-info border-0 shadow-sm rounded-4 d-flex align-items-center mb-4">
             <i class="fas fa-info-circle fa-2x me-3"></i>
             <div>
                 <strong>Information:</strong> This module allows you to link subject specialists and class teachers to specific sections.
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <form asp-action="TeacherAssignment" method="get" class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
+                                   class="form-control border-start-0" placeholder="Search by teacher name, ID, class, section, or subject..." />
+                            <button type="submit" class="btn btn-warning px-4">Search</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
+                        {
+                            <a asp-action="TeacherAssignment" class="btn btn-link text-decoration-none">
+                                <i class="fas fa-times me-1"></i> Clear Search
+                            </a>
+                        }
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -27,51 +65,66 @@
                         <th class="ps-4">Teacher Name</th>
                         <th>Class & Section</th>
                         <th>Subject</th>
+                        <th>Assignment Type</th>
                         <th>Status</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="ps-4">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-warning text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                    <span class="fw-bold">AJ</span>
-                                </div>
-                                <div>
-                                    <div class="fw-bold">Ali Javed</div>
-                                    <div class="text-muted small">ID: T-402</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Class 3 - Section A</td>
-                        <td>Mathematics</td>
-                        <td><span class="badge bg-success rounded-pill">Active</span></td>
-                        <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="ps-4">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-info text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                    <span class="fw-bold">SM</span>
-                                </div>
-                                <div>
-                                    <div class="fw-bold">Sara Malik</div>
-                                    <div class="text-muted small">ID: T-405</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Class 2 - Section B</td>
-                        <td>General Science</td>
-                        <td><span class="badge bg-success rounded-pill">Active</span></td>
-                        <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
+                    @if (Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-@item.BadgeColor text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                            <span class="fw-bold">@item.Initials</span>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@item.TeacherName</div>
+                                            <div class="text-muted small">ID: @item.TeacherID</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@item.ClassSection</td>
+                                <td>@item.Subject</td>
+                                <td><span class="badge bg-@item.BadgeColor rounded-pill">@item.AssignmentType</span></td>
+                                <td>
+                                    @if (item.Status == "Active")
+                                    {
+                                        <span class="badge bg-success rounded-pill">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill">@item.Status</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a asp-action="TeacherAssignmentDetails" asp-route-id="@item.AssignmentID" class="btn btn-sm btn-outline-primary rounded-pill" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="TeacherAssignmentEdit" asp-route-id="@item.AssignmentID" class="btn btn-sm btn-outline-warning rounded-pill" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="TeacherAssignmentDelete" asp-route-id="@item.AssignmentID" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fas fa-chalkboard-teacher fa-3x mb-3 opacity-25"></i>
+                                <p class="mb-0">No teacher assignments found. Click "New Assignment" to create one.</p>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

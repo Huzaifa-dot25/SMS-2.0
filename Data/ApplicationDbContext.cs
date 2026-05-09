@@ -24,6 +24,8 @@ namespace StudentManagementSystem.Data
         public DbSet<StudentResult> StudentResults { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
+        public DbSet<TeacherAssignment> TeacherAssignments { get; set; }
+        public DbSet<Statement> Statements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

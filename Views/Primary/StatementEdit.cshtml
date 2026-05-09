@@ -1,0 +1,169 @@
+@model StudentManagementSystem.Models.Statement
+
+@{
+    ViewData["Title"] = "Edit Statement";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-success text-white py-3" style="border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Statement</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="StatementEdit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                        <input type="hidden" asp-for="StatementID" />
+                        <input type="hidden" asp-for="CreatedDate" />
+
+                        <!-- Basic Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-success border-bottom pb-2 mb-3">
+                                    <i class="fas fa-comment-dots me-2"></i>Statement Information
+                                </h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Category" class="form-label fw-bold"></label>
+                                <select asp-for="Category" class="form-select">
+                                    <option value="">Select Category</option>
+                                    <option value="Academic Performance" selected="@(Model.Category == "Academic Performance")">Academic Performance</option>
+                                    <option value="Behavioral Conduct" selected="@(Model.Category == "Behavioral Conduct")">Behavioral Conduct</option>
+                                    <option value="Extracurricular" selected="@(Model.Category == "Extracurricular")">Extracurricular</option>
+                                    <option value="Attendance" selected="@(Model.Category == "Attendance")">Attendance</option>
+                                    <option value="Homework" selected="@(Model.Category == "Homework")">Homework</option>
+                                    <option value="Participation" selected="@(Model.Category == "Participation")">Participation</option>
+                                    <option value="Social Skills" selected="@(Model.Category == "Social Skills")">Social Skills</option>
+                                </select>
+                                <span asp-validation-for="Category" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StatementType" class="form-label fw-bold"></label>
+                                <select asp-for="StatementType" class="form-select">
+                                    <option value="Positive" selected="@(Model.StatementType == "Positive")">Positive</option>
+                                    <option value="Needs Improvement" selected="@(Model.StatementType == "Needs Improvement")">Needs Improvement</option>
+                                    <option value="Concern" selected="@(Model.StatementType == "Concern")">Concern</option>
+                                </select>
+                                <span asp-validation-for="StatementType" class="text-danger"></span>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label asp-for="StatementText" class="form-label fw-bold"></label>
+                                <textarea asp-for="StatementText" class="form-control" rows="4" placeholder="Enter the descriptive statement text..."></textarea>
+                                <span asp-validation-for="StatementText" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Targeting Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-success border-bottom pb-2 mb-3">
+                                    <i class="fas fa-bullseye me-2"></i>Targeting Options
+                                </h5>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Subcategory" class="form-label fw-bold"></label>
+                                <select asp-for="Subcategory" class="form-select">
+                                    <option value="">Select Subcategory</option>
+                                    <option value="Mathematics" selected="@(Model.Subcategory == "Mathematics")">Mathematics</option>
+                                    <option value="English" selected="@(Model.Subcategory == "English")">English</option>
+                                    <option value="Science" selected="@(Model.Subcategory == "Science")">Science</option>
+                                    <option value="Social Studies" selected="@(Model.Subcategory == "Social Studies")">Social Studies</option>
+                                    <option value="Art" selected="@(Model.Subcategory == "Art")">Art</option>
+                                    <option value="Music" selected="@(Model.Subcategory == "Music")">Music</option>
+                                    <option value="Physical Education" selected="@(Model.Subcategory == "Physical Education")">Physical Education</option>
+                                    <option value="Leadership" selected="@(Model.Subcategory == "Leadership")">Leadership</option>
+                                    <option value="Teamwork" selected="@(Model.Subcategory == "Teamwork")">Teamwork</option>
+                                    <option value="Responsibility" selected="@(Model.Subcategory == "Responsibility")">Responsibility</option>
+                                    <option value="Creativity" selected="@(Model.Subcategory == "Creativity")">Creativity</option>
+                                    <option value="Problem Solving" selected="@(Model.Subcategory == "Problem Solving")">Problem Solving</option>
+                                </select>
+                                <span asp-validation-for="Subcategory" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TargetClass" class="form-label fw-bold"></label>
+                                <select asp-for="TargetClass" class="form-select">
+                                    <option value="">All Classes</option>
+                                    <option value="Class 1" selected="@(Model.TargetClass == "Class 1")">Class 1</option>
+                                    <option value="Class 2" selected="@(Model.TargetClass == "Class 2")">Class 2</option>
+                                    <option value="Class 3" selected="@(Model.TargetClass == "Class 3")">Class 3</option>
+                                    <option value="Class 4" selected="@(Model.TargetClass == "Class 4")">Class 4</option>
+                                    <option value="Class 5" selected="@(Model.TargetClass == "Class 5")">Class 5</option>
+                                </select>
+                                <span asp-validation-for="TargetClass" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="SubjectSpecific" class="form-label fw-bold"></label>
+                                <select asp-for="SubjectSpecific" class="form-select">
+                                    <option value="">All Subjects</option>
+                                    <option value="English" selected="@(Model.SubjectSpecific == "English")">English</option>
+                                    <option value="Mathematics" selected="@(Model.SubjectSpecific == "Mathematics")">Mathematics</option>
+                                    <option value="General Science" selected="@(Model.SubjectSpecific == "General Science")">General Science</option>
+                                    <option value="Social Studies" selected="@(Model.SubjectSpecific == "Social Studies")">Social Studies</option>
+                                    <option value="Urdu" selected="@(Model.SubjectSpecific == "Urdu")">Urdu</option>
+                                    <option value="Islamic Studies" selected="@(Model.SubjectSpecific == "Islamic Studies")">Islamic Studies</option>
+                                    <option value="Computer Studies" selected="@(Model.SubjectSpecific == "Computer Studies")">Computer Studies</option>
+                                    <option value="Art & Craft" selected="@(Model.SubjectSpecific == "Art & Craft")">Art & Craft</option>
+                                </select>
+                                <span asp-validation-for="SubjectSpecific" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-success border-bottom pb-2 mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Additional Information
+                                </h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" />
+                                    <label asp-for="IsActive" class="form-check-label fw-bold"></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CreatedBy" class="form-label fw-bold"></label>
+                                <input asp-for="CreatedBy" class="form-control" placeholder="Enter your name..." />
+                                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UsageCount" class="form-label fw-bold"></label>
+                                <input asp-for="UsageCount" class="form-control" type="number" readonly />
+                                <small class="text-muted">Usage count is automatically tracked</small>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label asp-for="Notes" class="form-label fw-bold"></label>
+                                <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Additional notes about this statement..."></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="ManageStatements" class="btn btn-secondary px-4">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Statements
+                                    </a>
+                                    <div>
+                                        <a asp-action="StatementDetails" asp-route-id="@Model.StatementID" class="btn btn-outline-secondary me-2">
+                                            <i class="fas fa-eye me-2"></i>View Details
+                                        </a>
+                                        <button type="submit" class="btn btn-success px-4">
+                                            <i class="fas fa-save me-2"></i>Update Statement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

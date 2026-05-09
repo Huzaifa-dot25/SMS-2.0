@@ -1,0 +1,176 @@
+@model StudentManagementSystem.Models.TeacherAssignment
+
+@{
+    ViewData["Title"] = "Edit Teacher Assignment";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-warning text-white py-3" style="border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i>Edit Teacher Assignment - @Model.TeacherName</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="TeacherAssignmentEdit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                        <input type="hidden" asp-for="AssignmentID" />
+                        <input type="hidden" asp-for="CreatedDate" />
+
+                        <!-- Teacher Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-warning border-bottom pb-2 mb-3">
+                                    <i class="fas fa-user-tie me-2"></i>Teacher Information
+                                </h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TeacherID" class="form-label fw-bold"></label>
+                                <input asp-for="TeacherID" class="form-control" />
+                                <span asp-validation-for="TeacherID" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TeacherName" class="form-label fw-bold"></label>
+                                <input asp-for="TeacherName" class="form-control" />
+                                <span asp-validation-for="TeacherName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Assignment Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-warning border-bottom pb-2 mb-3">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Assignment Details
+                                </h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Class" class="form-label fw-bold"></label>
+                                <select asp-for="Class" class="form-select">
+                                    <option value="">Select Class</option>
+                                    <option value="Class 1" selected="@(Model.Class == "Class 1")">Class 1</option>
+                                    <option value="Class 2" selected="@(Model.Class == "Class 2")">Class 2</option>
+                                    <option value="Class 3" selected="@(Model.Class == "Class 3")">Class 3</option>
+                                    <option value="Class 4" selected="@(Model.Class == "Class 4")">Class 4</option>
+                                    <option value="Class 5" selected="@(Model.Class == "Class 5")">Class 5</option>
+                                </select>
+                                <span asp-validation-for="Class" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Section" class="form-label fw-bold"></label>
+                                <select asp-for="Section" class="form-select">
+                                    <option value="">Select Section</option>
+                                    <option value="A" selected="@(Model.Section == "A")">Section A</option>
+                                    <option value="B" selected="@(Model.Section == "B")">Section B</option>
+                                    <option value="C" selected="@(Model.Section == "C")">Section C</option>
+                                    <option value="D" selected="@(Model.Section == "D")">Section D</option>
+                                </select>
+                                <span asp-validation-for="Section" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Subject" class="form-label fw-bold"></label>
+                                <select asp-for="Subject" class="form-select">
+                                    <option value="">Select Subject</option>
+                                    <option value="English" selected="@(Model.Subject == "English")">English</option>
+                                    <option value="Mathematics" selected="@(Model.Subject == "Mathematics")">Mathematics</option>
+                                    <option value="General Science" selected="@(Model.Subject == "General Science")">General Science</option>
+                                    <option value="Social Studies" selected="@(Model.Subject == "Social Studies")">Social Studies</option>
+                                    <option value="Urdu" selected="@(Model.Subject == "Urdu")">Urdu</option>
+                                    <option value="Islamic Studies" selected="@(Model.Subject == "Islamic Studies")">Islamic Studies</option>
+                                    <option value="Computer Studies" selected="@(Model.Subject == "Computer Studies")">Computer Studies</option>
+                                    <option value="Art & Craft" selected="@(Model.Subject == "Art & Craft")">Art & Craft</option>
+                                    <option value="Physical Education" selected="@(Model.Subject == "Physical Education")">Physical Education</option>
+                                    <option value="Music" selected="@(Model.Subject == "Music")">Music</option>
+                                    <option value="Library" selected="@(Model.Subject == "Library")">Library</option>
+                                </select>
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="AssignmentType" class="form-label fw-bold"></label>
+                                <select asp-for="AssignmentType" class="form-select">
+                                    <option value="Class Teacher" selected="@(Model.AssignmentType == "Class Teacher")">Class Teacher</option>
+                                    <option value="Subject Teacher" selected="@(Model.AssignmentType == "Subject Teacher")">Subject Teacher</option>
+                                </select>
+                                <span asp-validation-for="AssignmentType" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Assignment Period -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-warning border-bottom pb-2 mb-3">
+                                    <i class="fas fa-calendar-alt me-2"></i>Assignment Period
+                                </h5>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="AcademicYear" class="form-label fw-bold"></label>
+                                <select asp-for="AcademicYear" class="form-select">
+                                    <option value="">Select Academic Year</option>
+                                    <option value="2024-2025" selected="@(Model.AcademicYear == "2024-2025")">2024-2025</option>
+                                    <option value="2025-2026" selected="@(Model.AcademicYear == "2025-2026")">2025-2026</option>
+                                    <option value="2026-2027" selected="@(Model.AcademicYear == "2026-2027")">2026-2027</option>
+                                    <option value="2027-2028" selected="@(Model.AcademicYear == "2027-2028")">2027-2028</option>
+                                </select>
+                                <span asp-validation-for="AcademicYear" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StartDate" class="form-label fw-bold"></label>
+                                <input asp-for="StartDate" class="form-control" type="date" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="EndDate" class="form-label fw-bold"></label>
+                                <input asp-for="EndDate" class="form-control" type="date" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Status and Notes -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-warning border-bottom pb-2 mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Additional Information
+                                </h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Status" class="form-label fw-bold"></label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Active" selected="@(Model.Status == "Active")">Active</option>
+                                    <option value="Inactive" selected="@(Model.Status == "Inactive")">Inactive</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label asp-for="Notes" class="form-label fw-bold"></label>
+                                <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Additional notes about this assignment..."></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="TeacherAssignment" class="btn btn-secondary px-4">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                                    </a>
+                                    <div>
+                                        <a asp-action="TeacherAssignmentDetails" asp-route-id="@Model.AssignmentID" class="btn btn-outline-secondary me-2">
+                                            <i class="fas fa-eye me-2"></i>View Details
+                                        </a>
+                                        <button type="submit" class="btn btn-warning px-4">
+                                            <i class="fas fa-save me-2"></i>Update Assignment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

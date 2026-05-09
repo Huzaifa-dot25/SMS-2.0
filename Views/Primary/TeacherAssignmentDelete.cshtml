@@ -1,0 +1,136 @@
+@model StudentManagementSystem.Models.TeacherAssignment
+
+@{
+    ViewData["Title"] = "Delete Teacher Assignment";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-danger text-white py-3" style="border-radius: 20px 20px 0 0;">
+                    <h4 class="mb-0"><i class="fas fa-user-times me-2"></i>Delete Teacher Assignment</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+                        <div>
+                            <strong>Warning:</strong> Are you sure you want to delete this teacher assignment? This action cannot be undone.
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-@Model.BadgeColor text-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width:100px;height:100px;">
+                                <span class="fw-bold" style="font-size: 1.5rem;">@Model.Initials</span>
+                            </div>
+                            <h4 class="mb-1">@Model.TeacherName</h4>
+                            <p class="text-muted mb-2">ID: @Model.TeacherID</p>
+                            <span class="badge bg-@Model.BadgeColor">@Model.AssignmentType</span>
+                        </div>
+
+                        <div class="col-md-8">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">Assignment Information</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <strong>Class & Section:</strong>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Model.ClassSection
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <strong>Subject:</strong>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Model.Subject
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <strong>Assignment Type:</strong>
+                                </div>
+                                <div class="col-sm-8">
+                                    <span class="badge bg-@Model.BadgeColor">@Model.AssignmentType</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <strong>Status:</strong>
+                                </div>
+                                <div class="col-sm-8">
+                                    @if (Model.Status == "Active")
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@Model.Status</span>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.AcademicYear))
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Academic Year:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        @Model.AcademicYear
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.StartDate.HasValue)
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Start Date:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        @Model.StartDate.Value.ToShortDateString()
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Notes))
+                            {
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Notes:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        @Model.Notes
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <form asp-action="TeacherAssignmentDelete" class="mt-4">
+                        <input type="hidden" asp-for="AssignmentID" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="TeacherAssignmentDetails" asp-route-id="@Model.AssignmentID" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Details
+                            </a>
+                            <div>
+                                <a asp-action="TeacherAssignment" class="btn btn-outline-secondary me-2">
+                                    <i class="fas fa-ban me-2"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash me-2"></i>Delete Assignment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
