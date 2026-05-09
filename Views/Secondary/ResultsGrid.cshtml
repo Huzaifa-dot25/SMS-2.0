@@ -64,6 +64,21 @@
     </div>
 </div>
 
+<div class="card border-0 shadow-sm mb-4 no-print" id="searchCard" style="display:none;">
+    <div class="card-body pb-2">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-bold">Search by Class</label>
+                <input type="text" id="classSearchInput" class="form-control bg-light border-0 shadow-sm" placeholder="Type class name to filter...">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-bold">Search by Student Name</label>
+                <input type="text" id="nameSearchInput" class="form-control bg-light border-0 shadow-sm" placeholder="Type student name to filter...">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="print-header text-center mb-4" style="display:none;">
     <h3 class="fw-bold">Secondary School – Result Cards</h3>
     <p class="text-muted">@(Model.SelectedSession ?? "All Sessions") &nbsp;|&nbsp; @(Model.SelectedClass ?? "All Classes") &nbsp;|&nbsp; @(Model.SelectedTerm ?? "All Terms")</p>
@@ -88,7 +103,12 @@ else if (!Model.ReportCards.Any())
 }
 else
 {
-    <div class="mb-3 text-muted small no-print">Showing <strong>@Model.ReportCards.Count</strong> report card(s)</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchCard').style.display = 'block';
+        });
+    </script>
+    <div class="mb-3 text-muted small no-print">Showing <strong id="cardCount">@Model.ReportCards.Count</strong> report card(s)</div>
     <div class="row g-4" id="reportCardsGrid">
         @foreach (var card in Model.ReportCards)
         {
@@ -215,5 +235,37 @@ else
         document.querySelector('.no-print.card')?.style.removeProperty('display');
         document.querySelector('.print-header').style.display = 'none';
     }
+
+    function filterCards() {
+        const classSearch = document.getElementById('classSearchInput').value.toLowerCase();
+        const nameSearch = document.getElementById('nameSearchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.report-card-col');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const className = card.querySelector('.fa-chalkboard').parentElement.textContent.toLowerCase();
+            const studentName = card.querySelector('h6').textContent.toLowerCase();
+            
+            const classMatch = classSearch === '' || className.includes(classSearch);
+            const nameMatch = nameSearch === '' || studentName.includes(nameSearch);
+            
+            if (classMatch && nameMatch) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        document.getElementById('cardCount').textContent = visibleCount;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const classInput = document.getElementById('classSearchInput');
+        const nameInput = document.getElementById('nameSearchInput');
+        
+        if (classInput) classInput.addEventListener('keyup', filterCards);
+        if (nameInput) nameInput.addEventListener('keyup', filterCards);
+    });
 </script>
 }
